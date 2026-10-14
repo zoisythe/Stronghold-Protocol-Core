@@ -12,6 +12,8 @@ dependencies = []
 
 [tool.setuptools.packages.find]
 where = ["python"]
+include = ["stronghold_core*"]
+namespaces = false
 
 [tool.setuptools.package-data]
 stronghold_core = ["_runtime/**/*.js", "_runtime/**/*.mjs", "_runtime/**/*.json", "_runtime/LICENSE", "_runtime/NOTICE.md", "_runtime/THIRD-PARTY-NOTICES.md"]
