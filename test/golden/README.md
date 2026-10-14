@@ -25,5 +25,6 @@ no numerical tolerance was added. Battle event/snapshot/hook diagnostics remain
 available in the golden runner although training disables event recording.
 
 A mismatch is investigated, not repaired by regenerating expectations from the
-new implementation. Rule/source references remain in `docs/`; see
-`docs/CORE_VALIDATION.md` for the accepted extraction's evidence.
+new implementation. Rule/source references remain in `docs/`. The core extraction
+passed all 287 scenarios and the compact Python integration on Windows and WSL;
+subsequent changes run only checks relevant to their risk.

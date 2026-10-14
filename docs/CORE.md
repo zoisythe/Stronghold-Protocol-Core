@@ -35,16 +35,12 @@ Generated gameplay data retains source revision and SHA-256 provenance. Keep
 text used by rule predicates; never hand-edit generated tables. No game art is
 included. Original rules and GPL/source notices remain authoritative.
 
-## Delivery and verification
+## Verification
 
-Implement first, then validate only the changed risk. Final acceptance uses the
-existing 287 golden scenarios once, including their existing whole-match bot
-runs; immutable original JSON remains untouched. Compare gameplay fields exactly
-and explicitly exclude removed presentation fields. Add one compact Python
-integration script for a full solo match, invalid-action atomicity, shadow
-advice, setup/curriculum, single/batch parity and process cleanup. Windows is the
-primary run; reuse the integration script in WSL and clean temporary copies.
-Measure representative core/IPC/batch/teacher costs once. No extra component
-test matrix, large trace corpus or duplicated whole-match suite is required.
+Use the existing 287 golden scenarios (including whole-match bot runs) and the
+compact Python integration for actions, advice, setup/curriculum, single/batch
+parity and process cleanup. Original golden JSON remains immutable; compare
+gameplay fields exactly, excluding documented presentation metadata. Run only
+checks relevant to changed behavior and clean temporary WSL project contents.
 
-Commit runnable checkpoints. Public API: [CORE_API.md](CORE_API.md).
+Public API: [CORE_API.md](CORE_API.md).
