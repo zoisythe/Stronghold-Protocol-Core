@@ -1,5 +1,15 @@
 # AGENTS.md
 
+## Headless core (2026-10-14)
+
+This branch extracts the existing Node.js game into a headless training core.
+Read `docs/CORE.md` and `docs/CORE_API.md` first; their boundaries and minimal
+verification supersede web-specific workflow instructions below. Use Node.js
+with the existing npm configuration and `uv` for Python. Preserve all gameplay,
+original golden JSON, deterministic ordering and content; do not substitute
+missing rules or synthetic battle outcomes. Work on `core`, implement before
+necessary validation, and commit runnable checkpoints. No `.worktrees` required.
+
 Entry point for AI coding assistants (Codex, Claude Code, Cursor, Copilot …) working on this repository. It only
 indexes the existing documents and their hard rules; when this file and a linked document disagree, the document wins.
 Human contributors: [CONTRIBUTING.md](CONTRIBUTING.md) is the same material in full.
