@@ -18,7 +18,7 @@ export class MatchInfra {
     this.errorCount++;
     const msg = `${label}: ${e && e.message ? e.message : e}`;
     if (this.errors.length < 50) this.errors.push({ label, message: String(e && e.message ? e.message : e), stack: e && e.stack ? String(e.stack).split('\n').slice(0, 6).join('\n') : null });
-    this.log.error?.(`[match ${this.roomCode}] ${msg}`, e && e.stack ? String(e.stack).split('\n').slice(1, 4).join(' | ') : '');
+    throw new Error(msg, { cause: e });
   }
 
   /** Schedule a guarded callback (tracked for dispose). */

@@ -26,7 +26,7 @@ export const DATA_DIR = path.join(ROOT, 'data');
 /** Files the game expects (a warning lists the missing ones). */
 export const DATA_FILES = Object.freeze([
   'config', 'chess', 'bonds', 'garrisons', 'items', 'bands', 'effects', 'choices',
-  'enemies', 'factions', 'waves', 'stages', 'bosses', 'tokens', 'assets', 'backups',
+  'enemies', 'factions', 'waves', 'stages', 'bosses', 'tokens', 'backups',
 ]);
 
 /**
@@ -76,7 +76,7 @@ export function loadData(dir = DATA_DIR, { log = console, expected = DATA_FILES 
     }
   }
   const missing = expected.filter((k) => !(k in out));
-  if (missing.length) log.warn(`[data] missing data files: ${missing.map((k) => k + '.json').join(', ')}`);
+  if (missing.length) throw new Error(`[data] missing required gameplay tables: ${missing.join(', ')}`);
   return deepFreeze(out);
 }
 

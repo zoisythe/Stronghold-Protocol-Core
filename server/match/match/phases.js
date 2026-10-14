@@ -249,7 +249,7 @@ export class MatchPhases {
 
   enterBattleCheck() {
     this.phase = PHASE.BATTLE_CHECK;
-    this.setDeadline(this.gd.timer('battleCheck'), () => this.startRound(1), { silent: this.soloUntimed });
+    this.later(0, () => this.startRound(1));
     this.markPublic();
   }
 
@@ -282,11 +282,10 @@ export class MatchPhases {
       try { this.dispatcher.dispatchEliminated(ps, 'onRoundStart', { round: r }); } catch (e) { this.reportError('dispatch onRoundStart (eliminated)', e); }
     }
     for (const ps of alive) ps.recompute();
-    this.setDeadline(DELAYS.ROUND_START / 1000, () => this.afterRoundStart(), { silent: this.soloUntimed });
+    this.later(0, () => this.afterRoundStart());
     this.markPublic();
     // eliminated humans and spectator seats scout the board of the player they follow through the round's prep, not
     // their own empty board (community report of 2026-10-06, item 56; MatchWatch._followScout)
-    for (const ps of this._viewers()) this._followScout(ps);
   }
 
   /** Stable per-match pairs and their templates, generated before the prep preview / board validation. */

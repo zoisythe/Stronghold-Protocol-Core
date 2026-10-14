@@ -45,6 +45,7 @@ const APPROXIMATED_MATH = ['acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh', 'a
 
 const nodeFiles = [
   'server/**/*.js',
+  'server/**/*.mjs',
   'shared/**/*.js',
   'tools/**/*.js',
   'tools/**/*.mjs',

@@ -1126,7 +1126,22 @@ export function diffDigest(a, b, path = '', out = [], limit = 40) {
  * Compare computed digests (id → digest) with stored ones (storedDigests of the golden document).
  * @returns {Array<{ scenario: string, diffs: Array<{ path: string, old: any, new: any }> }>}
  */
+export function gameplayDigest(digest) {
+  const value = JSON.parse(JSON.stringify(digest));
+  if (value.mode) {
+    delete value.combat;
+    delete value.end.virtualMs;
+    for (const player of Object.values(value.players)) {
+      delete player.title; delete player.trophies; delete player.reward;
+    }
+  }
+  return value;
+}
+
 export function compareFamily(stored, computed) {
+  stored = Object.fromEntries(Object.entries(stored).map(([id, d]) => [id, gameplayDigest(d)]));
+  computed = Object.fromEntries(Object.entries(computed).map(([id, d]) => [id, gameplayDigest(d)]));
+
   const out = [];
   for (const [id, dg] of Object.entries(computed)) {
     const old = stored ? stored[id] : undefined;

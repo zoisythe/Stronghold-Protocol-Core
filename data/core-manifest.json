@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "transform_version": 1,
+  "source_revision": "488db49f11daf862b67ce26fa4cf89aa6cba2466",
+  "files": {
+    "backups.json": {
+      "source_sha256": "1c2e4e1b65df7f10ff3902f8c74a708f57ed8381e6351e19ecdc9c8c140423f2",
+      "generated_sha256": "4ef0effff5f546b5ce3c89842d89c2ad16fed266adbe886d11c8b8323737c596",
+      "source_bytes": 2056247,
+      "generated_bytes": 2035233
+    },
+    "bands.json": {
+      "source_sha256": "8f18abc99eb50639a1f2fc679a84015d6d8cc8aa3ff7c7d22ad6db5dc347053b",
+      "generated_sha256": "1dcadcab155c8708f03f75741197813170056e91cb8d655c0d8ea2d53cab858f",
+      "source_bytes": 35918,
+      "generated_bytes": 35919
+    },
+    "bonds.json": {
+      "source_sha256": "53a22f4724771b6ff40041635e907c0af39790731f661b0439fc593f5a91c94c",
+      "generated_sha256": "18c462e3ca3f20847793ba51ccabf2fbe9051a6ab1285b7708d67e1ad072b916",
+      "source_bytes": 85693,
+      "generated_bytes": 85694
+    },
+    "bosses.json": {
+      "source_sha256": "427c12bcdb23c449ab2d423129b1d339ecd76cc7c70a181a3d2b5a4af88b96a9",
+      "generated_sha256": "dac9deb1c46503b3a43a2c74a2c0c9184b74f50f7082c076b0d5d3419a735952",
+      "source_bytes": 18057,
+      "generated_bytes": 18058
+    },
+    "chess.json": {
+      "source_sha256": "fd463d31c21d3f40524058abb47fe64b6c32ebed22956586a50bee672e6dfa79",
+      "generated_sha256": "df476451751a6e3083bd22719da42aa3e7e5ad16e333bf058647edc22d36d56c",
+      "source_bytes": 1875834,
+      "generated_bytes": 1834695
+    },
+    "choices.json": {
+      "source_sha256": "c49f998503cf0a50cd2e71c71b03aac6b83e3e987eb767d20361ed344b5c6769",
+      "generated_sha256": "223ca53dbedb7bd2746891c60e629aee3e0d9d29dc85834dc0163e999a60cf2f",
+      "source_bytes": 124486,
+      "generated_bytes": 124487
+    },
+    "config.json": {
+      "source_sha256": "a673cc270833eaf75128d66327e4ce50720f1086bbfb0b8b00dac5ea111fd2b8",
+      "generated_sha256": "9081a7840cc353ca222e0bf0f976468f7e86262ca13363c429cac791f7d30894",
+      "source_bytes": 63745,
+      "generated_bytes": 58420
+    },
+    "effects.json": {
+      "source_sha256": "96e28be614f04da6d58c9e95706d742863c756b94dcad498e808c3410ba620e3",
+      "generated_sha256": "21e7312f1a5c8265b910ddd38f3159eb6cafdb5ff20bfca8883a35df06fb2092",
+      "source_bytes": 253427,
+      "generated_bytes": 253428
+    },
+    "enemies.json": {
+      "source_sha256": "043fdad2dd0dc210f285355d6a4db70f5466c898c6bbcd0d56ee9b219f6e1f45",
+      "generated_sha256": "dae8433b6c50e89faf733e0ec3513a5f9d35b218aab66dc4f7fd89267beb0ff0",
+      "source_bytes": 407255,
+      "generated_bytes": 407256
+    },
+    "factions.json": {
+      "source_sha256": "6bdcf7933eee4b156476769d724d60b34f4b69b095726d1638f02b91d8a22362",
+      "generated_sha256": "c57c3d10b6d8e011790445fa51cd500022f4d354b06306cc2d849df8f81900a1",
+      "source_bytes": 22026,
+      "generated_bytes": 22027
+    },
+    "garrisons.json": {
+      "source_sha256": "f5b1f5558a263c95abcf36411c31e781efd3ebb1bebdced99ad1f242c2a960e3",
+      "generated_sha256": "980cddb63e6c4c08fef03b0e04d9898c281b494d902f5e1ffd68655d7ce6dd77",
+      "source_bytes": 150039,
+      "generated_bytes": 150040
+    },
+    "items.json": {
+      "source_sha256": "6122a3cd75531f551a03082f000426a2d6b8028788fbd1abbaea5286592fbba4",
+      "generated_sha256": "244c68006e5e5bad5ddf1bcf5bb00645a298cfaf5d1fbbbaa65d157e08375726",
+      "source_bytes": 170806,
+      "generated_bytes": 170807
+    },
+    "stages.json": {
+      "source_sha256": "1939b85b5b34bd943a334244ae62806b296f5a5a614b3e0876a84ef801be40df",
+      "generated_sha256": "ed4ecf94d6cbd86553b2a3bfb055676d9fcef18ff64afb1e873ff231407f6ed2",
+      "source_bytes": 266095,
+      "generated_bytes": 266096
+    },
+    "tokens.json": {
+      "source_sha256": "9e3501357b07d754711fcfd8506286efa32b7774d98e419fdcff48c1f6729b39",
+      "generated_sha256": "7a853ec1ffdcf2354ecfa4902a24c9a5071aeb10dd192760bff5604a2cd51793",
+      "source_bytes": 138571,
+      "generated_bytes": 136790
+    },
+    "waves.json": {
+      "source_sha256": "80cb535958f22a1bf4ea71b26155c6f92ee1b49dd24b88acf4b2bcdf73d80e68",
+      "generated_sha256": "35132a3d5905eb7b3dbf41bee1bc3cfb22b83e6314b14b21a9a4bc3a3789c925",
+      "source_bytes": 137772,
+      "generated_bytes": 137773
+    }
+  }
+}

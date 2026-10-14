@@ -14,11 +14,11 @@ export const fail = (error, detail) => (detail ? { error, detail } : { error });
 
 /** Fixed presentation delays (real ms, × timerScale). */
 export const DELAYS = Object.freeze({
-  ROUND_START: 2000,
-  COMBAT_END: 1500,
-  SETTLE: 3000,
-  BOT_ACTION: 900,
-  BOT_STAGGER: 350,
+  ROUND_START: 0,
+  COMBAT_END: 0,
+  SETTLE: 0,
+  BOT_ACTION: 0,
+  BOT_STAGGER: 0,
   PUBLIC_THROTTLE: 100,
 });
 

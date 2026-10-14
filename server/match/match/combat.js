@@ -1,31 +1,22 @@
-// server/match/match/combat.js — Match methods: the battles of a normal round — Battle construction (newBattle, the
-// spawn list sanitised, a player's normal field after the onBattleStart handlers), the COMBAT phase in both modes
-// (server-run streaming, client-side combat), the per-field results and the sim-error log, then 联防 or SETTLE.
-// Installed on Match.prototype by server/match/Match.js (a method container: never instantiated; `this` is the match).
-
+// Retained gameplay methods from the 0.2.6 implementation.
 import { PHASE, GEO } from '../../../shared/constants.js';
 import { deriveSeed } from '../../sim/rng.js';
 import { withBounties } from '../waves.js';
 import { planUnite } from '../unite.js';
-import { FieldRunner, DeadBattle } from '../fields.js';
+import { FieldRunner } from '../fields.js';
 import { DELAYS } from './common.js';
 
 export class MatchCombat {
-  /** Construct a battle; a constructor failure yields a finished stand-in (clean result) and is logged. */
   newBattle(opts) {
     const full = { data: this.ds, content: this.battleContent, logger: this.log, ...opts };
     try {
       return new this.BattleClass(full);
     } catch (e) {
       this.reportError(`battle ${opts.fieldId} construct`, e);
-      return new DeadBattle(full, 'forced');
+      throw e;
     }
   }
 
-  /**
-   * Spawn list of a field after the onBattleStart handlers (which may edit `ev.spawns`): malformed entries are dropped
-   * and a kill bounty is copied into `mods.bountyCoins`, so a leaked bounty enemy keeps paying its killer in 联防.
-   */
   _sanitizeSpawns(list, ownerPlayerId = null) {
     const out = [];
     for (const s of Array.isArray(list) ? list : []) {
@@ -41,7 +32,6 @@ export class MatchCombat {
 
   _normalBattle(ps) { return this.newBattle(this._normalOpts(ps)); }
 
-  /** Battle options of a player's normal field (after the onBattleStart handlers). */
   _normalOpts(ps) {
     const wave = this.wave;
     const input = ps.battleInput({ side: 'L', colOffset: 0 });
@@ -69,50 +59,17 @@ export class MatchCombat {
   }
 
   startCombat() {
-    if (this.clientCombat) { this._startCombatClient(); return; }
     this.phase = PHASE.COMBAT;
     const alive = this.alivePlayers();
     this.lastResults = new Map();
     this.fields = alive.map((ps) => ({ fieldId: `n:${ps.playerId}`, kind: 'normal', players: [ps.playerId], battle: this._normalBattle(ps), live: true }));
     const limit = this.wave ? this.wave.timeLimit : 60;
     this.deadline = this.sched.instant ? 0 : this.sched.now() + Math.round((limit / this.gameSpeed) * 1000);
-    this._defaultWatch();
     this.markPublic();
     this.runner = new FieldRunner(this, this.fields, { onDone: (runner) => this.combatDone(runner) });
     this.runner.start();
   }
 
-  _startCombatClient() {
-    this.phase = PHASE.COMBAT;
-    const alive = this.alivePlayers();
-    this.lastResults = new Map();
-    this.watchers.clear();
-    const fields = alive.map((ps) => this._ccField({ fieldId: `n:${ps.playerId}`, kind: 'normal', players: [ps.playerId], opts: this._normalOpts(ps) }));
-    const limit = this.wave ? this.wave.timeLimit : 60;
-    this.deadline = this.sched.instant ? 0 : this.sched.now() + Math.round((limit / this.gameSpeed) * 1000);
-    this._launch(fields);
-    // every fighting human runs its own field; eliminated humans (and spectator seats) keep watching (research 09 §3.1
-    // "Keep-watching auto-observes the first available field", switching freely with 前往查看): a replica of the field
-    // of the player they follow — the one they last watched, else the first player still in (item 56) — else the first
-    for (const f of fields) for (const pid of f.players) {
-      const ps = this.players.get(pid);
-      if (!ps || ps.isBot || ps.left) continue;
-      this.watchers.set(pid, f.fieldId);
-      this._sendStart(pid, f);
-    }
-    const first = fields.find((f) => f.mode === 'client') || fields[0] || null;
-    if (first) {
-      for (const ps of this._viewers()) {
-        if (ps.alive || this.watchers.has(ps.playerId)) continue;
-        const f = this._watchTargetField(ps, fields) || first;
-        this.watchers.set(ps.playerId, f.fieldId);
-        this._sendStart(ps.playerId, f, { watch: true });
-      }
-    }
-    this.markPublic();
-  }
-
-  /** Aggregate a finished field's content/engine errors (battle.errors: unique records) for diagnostics. */
   _collectSimErrors(f, res) {
     this.simErrors += Number(res && res.errors) || 0;
     const list = f && f.battle && Array.isArray(f.battle.errors) ? f.battle.errors : [];
@@ -132,10 +89,8 @@ export class MatchCombat {
 
   combatDone(runner) { this._finishCombat((f) => runner.resultOf(f)); }
 
-  /** Every normal field has its result: record them, then 联防 or SETTLE. */
   _finishCombat(resultOf) {
     if (this.phase !== PHASE.COMBAT) return;
-    this._stopClientCombat();
     for (const f of this.fields) {
       const res = resultOf(f);
       this._collectSimErrors(f, res);
@@ -154,11 +109,6 @@ export class MatchCombat {
     this.later(this.scaled(DELAYS.COMBAT_END), () => this._afterCombat());
   }
 
-  /**
-   * After the COMBAT_END pause: 联防 or SETTLE. The plan is made now, from the players still in — a player who quit
-   * during the last field or the pause (中途退出 = eliminated, board cleared) is neither a helper nor a leaker whose
-   * enemies re-enter.
-   */
   _afterCombat() {
     if (this.phase !== PHASE.COMBAT) return;
     const plan = planUnite(this, this.lastResults);

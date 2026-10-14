@@ -1,66 +1,20 @@
-# AGENTS.md
+# Headless core development
 
-## Headless core (2026-10-14)
+Read `docs/CORE.md` and `docs/CORE_API.md`, then relevant gameplay rules and source
+evidence in `docs/DESIGN.md`, `docs/SIM.md`, `docs/META.md` and research documents.
+The accepted core plan supersedes historical web instructions.
 
-This branch extracts the existing Node.js game into a headless training core.
-Read `docs/CORE.md` and `docs/CORE_API.md` first; their boundaries and minimal
-verification supersede web-specific workflow instructions below. Use Node.js
-with the existing npm configuration and `uv` for Python. Preserve all gameplay,
-original golden JSON, deterministic ordering and content; do not substitute
-missing rules or synthetic battle outcomes. Work on `core`, implement before
-necessary validation, and commit runnable checkpoints. No `.worktrees` required.
-
-Entry point for AI coding assistants (Codex, Claude Code, Cursor, Copilot …) working on this repository. It only
-indexes the existing documents and their hard rules; when this file and a linked document disagree, the document wins.
-Human contributors: [CONTRIBUTING.md](CONTRIBUTING.md) is the same material in full.
-
-## What this is
-
-A non-commercial fan remake of Arknights「卫戍协议：盟约」 that runs in the browser: a Node.js server (economy, rounds,
-rooms) and a deterministic battle sim shared by the server and the browser. It aims to be faithful to the official mode.
-
-## Read first
-
-1. [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the code map: where things live, data flow, golden results,
-   import boundaries, where common changes start.
-2. [docs/DESIGN.md](docs/DESIGN.md) — the index of the rules: current rules in `docs/design/`, each release's
-   revisions and their evidence in `docs/history/`.
-3. The reference for the part you touch: [docs/SIM.md](docs/SIM.md) (battle engine API, hooks, test harness),
-   [docs/META.md](docs/META.md) (match flow, shop, protocol), [docs/DATA.md](docs/DATA.md) (generated data),
-   [docs/I18N.md](docs/I18N.md) (interface strings), `server/sim/content/kits/README.md` (operator kits).
-
-## Hard rules
-
-- **Official first.** Rules come from the official data tables (`.cache/gamedata/excel/` after setup) and
-  [PRTS](https://prts.wiki/). A detail no source settles is implemented the simplest way and marked `[ASSUMED]` in the
-  code and the PR. Deliberate deviations from the official mode are the maintainer's decision only.
-- **Determinism.** `server/sim/` is plain ESM that runs in Node and in browsers: no Node APIs, no `Math.random`, no
-  clocks, and no engine-approximated Math functions (use `server/sim/detmath.js`; ESLint and
-  `test/sim/detmath.test.js` enforce it).
-- **Golden results.** A refactor must not change `test/golden/*.json`. An intended gameplay change runs
-  `npm run golden:update` in the same commit, and the commit / PR names every moved scenario and why
-  ([test/golden/README.md](test/golden/README.md)).
-- **Generated data.** Never hand-edit `data/*.json`: change `tools/build-data.mjs` and regenerate.
-- **No game art in git.** `public/assets/` is ignored; never commit extracted or downloaded game files.
-- **Interface strings** go through `t('…')`, with entries in every pack under `public/i18n/`
-  (`node tools/i18n.mjs check --all --strict`).
-- **Docs follow the code.** A rule change updates `docs/design/`, the current `docs/history/` file and the reference
-  docs; run `node --test test/docs-consistency.test.js test/docs-paths.test.js`.
-- **Commits and PRs**: one topic per PR; a one-line message of what changed (Chinese or English) with the issue number;
-  no attribution trailers (`Co-Authored-By:`, `Generated with …`). The PR description states what, why, the sources,
-  the `[ASSUMED]` points, the tests you ran (paste the summary lines) and the golden moves. No ads, payments or other
-  monetisation — the project stays non-commercial.
-
-## Verify
-
-Run the tests of what you touched first, then everything before opening the PR:
-
-```bash
-node --test test/<area>/<file>.test.js      # targeted
-npm run ci                                  # the CI checks locally (tools/ci.mjs): node --test, smoke, lint, imports, types
-npm run golden                              # golden results
-```
-
-Browser suites are off by default and need Chrome: `SP_E2E=1` (UI), `SP_REAL_E2E=1` (real match, needs assets),
-`RENDER_E2E=1`, `SIM_E2E=1` — see CONTRIBUTING.md §2. Battle tests are easiest with the helpers described in
-docs/SIM.md (the test harness section) and the patterns in `test/content/op_siege.test.js`.
+- Work on `core`; reference baseline is master `488db49f`. No reference worktree.
+- Reuse existing Node.js logic and paths; npm as configured, `uv` for Python.
+- Preserve full solo/cooperative gameplay, deterministic math, ordering and
+  30 Hz combat. No generic substitutes or fake match results.
+- Implement first. Retain original golden acceptance and one compact Python
+  integration run; repeat only after relevant changes or failures.
+- Original `test/golden/*.json` is immutable. Never hand-edit generated tables;
+  use `node tools/core-import.mjs` and retain provenance.
+- Player observations are separate from private debug state. Legality/advice
+  queries never change gameplay, random streams or virtual time.
+- Keep source/license notices; no game art/monetisation. Commit runnable
+  checkpoints with one-line topic messages and no attribution trailers.
+- Reuse Python integration in WSL, then clean temporary project contents while
+  retaining the empty project directory.

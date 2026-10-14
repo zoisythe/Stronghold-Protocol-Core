@@ -41,6 +41,8 @@ export function createRng(seed = 1) {
   };
   /** current internal state (for debugging / hashing) */
   rng.state = () => s;
+  /** Restore a checkpoint without drawing (headless action transactions). */
+  rng.restore = (state) => { s = Number(state) >>> 0; };
   return rng;
 }
 

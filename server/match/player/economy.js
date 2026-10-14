@@ -48,9 +48,6 @@ export class PlayerEconomy {
     this.layers[bondId] = before + add;
     this.recompute();
     // A live prep gain, not a view delta: reconnects and combat-result backfill must not replay the cue.
-    if ([PHASE.ROUND_START, PHASE.SP_DRAFT, PHASE.PREP].includes(this.m.phase)) {
-      this.m.sendTo(this.playerId, { t: 'm.layer', playerId: this.playerId, bondId, add });
-    }
     this.m.dispatch(this, 'onLayers', { bondId, from: before, to: before + add, reason });
     return add;
   }

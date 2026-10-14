@@ -1,0 +1,4 @@
+include package.json LICENSE NOTICE.md THIRD-PARTY-NOTICES.md
+recursive-include server *.js *.mjs
+recursive-include shared *.js
+recursive-include data *.json

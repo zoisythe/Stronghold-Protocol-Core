@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stronghold-core"
+version = "0.1.0"
+description = "Python interface to the headless Stronghold Node.js game core"
+requires-python = ">=3.11"
+license = "GPL-3.0-or-later"
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.setuptools.package-data]
+stronghold_core = ["_runtime/**/*.js", "_runtime/**/*.mjs", "_runtime/**/*.json", "_runtime/LICENSE", "_runtime/NOTICE.md", "_runtime/THIRD-PARTY-NOTICES.md"]

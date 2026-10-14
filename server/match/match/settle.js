@@ -8,13 +8,11 @@ import { uniteSurvivors } from '../unite.js';
 import { buildResult } from '../results.js';
 import { FLOW_TICKER_PRIORITY, DELAYS } from './common.js';
 import { msg } from '../../../shared/i18n.js';
-import { onSettle, resetRoundCounters } from '../botEmotes.js';
 
 export class MatchSettle {
   settle(plan, uniteResult) {
     this.phase = PHASE.SETTLE;
     this.runner = null;
-    this._stopClientCombat();
     // the pending in-battle gains the views showed become persistent below (alive players) or lapse (DESIGN §20.15)
     for (const ps of this.order) if (ps.pendingLayerGains) { ps.pendingLayerGains = null; ps.dirty(); }
     const cap = this.gd.lpCapPerRound;
@@ -84,8 +82,7 @@ export class MatchSettle {
     this.fields = [];
     this.watchers.clear();
     this.markPublic();
-    onSettle(this); // one emote per alive AI per round (enabled by default; SP_BOT_EMOTES=0 silences it)
-    this.setDeadline(DELAYS.SETTLE / 1000, () => this.afterSettle(), { silent: this.soloUntimed });
+    this.later(0, () => this.afterSettle());
   }
 
   /**
@@ -93,27 +90,10 @@ export class MatchSettle {
    * no board uid) count once per unit type (the highest of them) — a result can never announce more units than the
    * lineup has kinds of.
    */
-  _charDamageTickers(ps, r) {
-    const steps = (Array.isArray(this.gd.config.broadcasts) ? this.gd.config.broadcasts : []).filter((b) => b.type === 'CHAR_DAMAGE' && Array.isArray(b.params)).map((b) => Number(b.params[0])).filter((n) => n > 0).sort((a, b) => b - a);
-    if (!steps.length) return;
-    const board = new Set();
-    for (const p of ps.board.values()) board.add(p.uid);
-    const best = new Map();
-    for (const u of r.unitStats || []) {
-      if (!u) continue;
-      const key = Number.isInteger(u.uid) && board.has(u.uid) ? `uid:${u.uid}` : `def:${u.defId}`;
-      const cur = best.get(key);
-      if (!cur || (Number(u.dmg) || 0) > (Number(cur.dmg) || 0)) best.set(key, u);
-    }
-    for (const u of best.values()) {
-      const hit = steps.find((s) => (u.dmg || 0) >= s);
-      if (hit) this.tickerFor('CHAR_DAMAGE', [ps.name, u.name || u.defId, String(hit)], { playerId: ps.playerId, param: String(hit) });
-    }
-  }
+  _charDamageTickers() {}
 
   afterSettle() {
     if (!this.alivePlayers().length) { this.finish({ victory: false, reason: 'eliminated' }); return; }
-    resetRoundCounters(this); // AI bot merge-counter resets each round (server/match/botEmotes.js)
     this.startRound(this.round + 1);
   }
 
@@ -121,7 +101,6 @@ export class MatchSettle {
     if (this.ended || this.disposed) return;
     this.ended = true;
     if (this.runner) { try { this.runner.stop(); } catch { /* ignore */ } this.runner = null; }
-    this._stopClientCombat();
     this.cancel(this._phaseTimer);
     this.cancel(this._turnTimer);
     for (const h of this._timers) { try { this.sched.clearTimeout(h); } catch { /* ignore */ } }
@@ -141,7 +120,6 @@ export class MatchSettle {
     this.markPublic();
     try { this.flush(true); } catch (e) { this.reportError('flush', e); }
     // every human still here gets the settlement — the spectator seats the same public rows (none of them their own)
-    for (const ps of this._viewers()) this.sendTo(ps.playerId, { ...result, playerId: ps.playerId });
     const { t, ...summary } = result;
     void t;
     summary.errors = this.errorCount;
