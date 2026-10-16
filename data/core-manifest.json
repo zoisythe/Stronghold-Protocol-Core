@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "transform_version": 1,
-  "source_revision": "488db49f11daf862b67ce26fa4cf89aa6cba2466",
+  "source_revision": "c24e17eec3af1e6dedfa9935a6d15245cf2f4586",
   "files": {
     "backups.json": {
       "source_sha256": "1c2e4e1b65df7f10ff3902f8c74a708f57ed8381e6351e19ecdc9c8c140423f2",
@@ -34,10 +34,10 @@
       "generated_bytes": 1834695
     },
     "choices.json": {
-      "source_sha256": "c49f998503cf0a50cd2e71c71b03aac6b83e3e987eb767d20361ed344b5c6769",
-      "generated_sha256": "223ca53dbedb7bd2746891c60e629aee3e0d9d29dc85834dc0163e999a60cf2f",
-      "source_bytes": 124486,
-      "generated_bytes": 124487
+      "source_sha256": "ed4572cac6905a56a14faebfd1f69ab4e2e5710573a27e486bd8e9be4f2b7100",
+      "generated_sha256": "e45cc5e0dfd1fbe62419f04fb2ea46c4dcf4c80ffe8c85432a2e0d3535db0a84",
+      "source_bytes": 124495,
+      "generated_bytes": 124496
     },
     "config.json": {
       "source_sha256": "a673cc270833eaf75128d66327e4ce50720f1086bbfb0b8b00dac5ea111fd2b8",

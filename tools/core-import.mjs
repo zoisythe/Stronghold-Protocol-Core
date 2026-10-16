@@ -1,18 +1,18 @@
 // Reimport the retained generated tables from an immutable Git source revision.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdirSync, writeFileSync, existsSync, unlinkSync, renameSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync, unlinkSync, renameSync } from 'node:fs';
 import { setTimeout as delay } from 'node:timers/promises';
 import { resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
-const ref = process.argv[2] || '488db49f11daf862b67ce26fa4cf89aa6cba2466';
+const ref = process.argv[2] || JSON.parse(readFileSync(join(root, 'data/core-manifest.json'), 'utf8')).source_revision;
 const output = resolve(process.argv[3] || join(root, 'data'));
 const git = (...args) => execFileSync('git', ['-C', root, ...args], { windowsHide: true, maxBuffer: 128 * 1024 * 1024 });
 const revision = git('rev-parse', `${ref}^{commit}`).toString().trim();
 const files = git('ls-tree', '-r', '--name-only', revision, '--', 'data').toString().trim().split('\n')
-  .filter((name) => /^data\/[^/]+\.json$/.test(name) && !['data/assets.json', 'data/local-assets.json', 'data/emotes.json', 'data/tuning.json', 'data/core-manifest.json'].includes(name));
+  .filter((name) => /^data\/[^/]+\.json$/.test(name) && !['data/assets.json', 'data/local-assets.json', 'data/emotes.json', 'data/tuning.json', 'data/local-fx.json', 'data/core-manifest.json'].includes(name));
 const strip = (value) => Array.isArray(value) ? value.map(strip) : value && typeof value === 'object'
   ? Object.fromEntries(Object.entries(value).filter(([key]) => key !== 'assets').map(([key, child]) => [key, strip(child)])) : value;
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -28,7 +28,7 @@ const save = async (path, bytes) => {
     }
   } finally { if (existsSync(temporary)) unlinkSync(temporary); }
 };
-for (const name of ['assets.json', 'local-assets.json', 'emotes.json', 'tuning.json']) {
+for (const name of ['assets.json', 'local-assets.json', 'emotes.json', 'tuning.json', 'local-fx.json']) {
   if (existsSync(join(output, name))) unlinkSync(join(output, name));
 }
 for (const path of files) {

@@ -1,17 +1,12 @@
 # Core development
 
-Read [docs/CORE.md](docs/CORE.md), [docs/CORE_API.md](docs/CORE_API.md) and the
-gameplay reference for the subsystem. Preserve original gameplay and data
-provenance. Work on `core`; baseline `master` remains available in Git.
+Read [CORE.md](docs/CORE.md) and [CORE_API.md](docs/CORE_API.md). Work on `core`;
+keep `.worktrees/master` unmodified as the pinned upstream reference, including
+its full rules and design documents. Use the existing npm setup and `uv`.
 
-Use Node.js/npm as configured and `uv` for Python. Implement first, then run only
-verification relevant to the risk. Final acceptance consists of `npm run golden`
-and `uv run python python/tests/integration.py`. No browser suite or duplicate
-component/whole-match matrix. Keep original golden JSON immutable.
-
-Keep 30 Hz combat, deterministic math, ordering, random streams and full content.
-Errors are explicit, never invented match results. Regenerate gameplay tables
-with `tools/core-import.mjs` instead of hand editing them.
-
-Commit runnable checkpoints with one-line topic messages and no attribution
-trailers. Retain source/license notices; never commit game art or monetisation.
+Implement first; validate relevant changes with the upstream golden corpus and
+one compact Python integration. Golden JSON must match the pinned release byte
+for byte; never regenerate it from core. Import gameplay tables with
+`tools/core-import.mjs` and retain provenance. Preserve deterministic 30 Hz
+combat, player observation boundaries, explicit errors and source/license notices.
+Commit runnable checkpoints with one-line topic messages and no attribution trailers.

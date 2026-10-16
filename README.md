@@ -1,14 +1,11 @@
 # Stronghold Protocol headless core
 
-A non-commercial GPL-3.0-or-later fan implementation of Arknights 卫戍协议：盟约,
-extracted from the original Node.js game at commit
-`488db49f11daf862b67ce26fa4cf89aa6cba2466` (0.2.6).
+基于 [Stronghold Protocol](https://github.com/sganggs/Stronghold-Protocol) **v0.3.0**
+（`c24e17ee`）的无界面训练核心。保留完整原版玩法、单人/1–4 人合作、四个自选槽位和
+Symbolic AI 教师；移除网页、联网、素材与插件设施。Python 通过常驻 Node.js 进程调用，
+支持批量环境、可重放配置和课程扰动。
 
-Complete battle/content and solo/1–4 seat cooperative rules run without a browser
-or HTTP server. Python uses a persistent Node.js process. The optional original
-symbolic teacher retains its planner and real battle rehearsals.
-
-Requires Node.js >=22 and Python >=3.11; use `uv` for Python tooling.
+需要 Node.js >=22、Python >=3.11；Python 使用 `uv`，Node 工具保持现有 npm 配置。
 
 ```powershell
 uv sync
@@ -22,39 +19,32 @@ with Env() as env:
     state = env.reset(3, {"difficulty": "FUNNY"})
     while not state["terminated"]:
         seat = state["decision_seats"][0]
-        action = env.teacher_action(seat)  # Or a model action.
-        state = env.step(seat, action)
+        state = env.step(seat, env.teacher_action(seat))
         if "error" in state:
             raise RuntimeError(state["error"])
 ```
 
-`observe` returns player-visible structured state. `legal_actions` returns
-concrete gameplay intents. `step` returns observations, decision seats,
-termination and gameplay metrics; rewards/tensors belong to the trainer.
-`debug_state` is separate and contains private replay information.
-`BatchEnv` supports ordered batches over configurable workers.
+[API、配置和批量调用](docs/CORE_API.md) · [核心边界与同步流程](docs/CORE.md)
 
-Python wheels bundle the JavaScript runtime and gameplay data; Node.js is installed
-separately. `uv sync` installs the editable package from this checkout.
-
-Read [docs/CORE.md](docs/CORE.md), [docs/CORE_API.md](docs/CORE_API.md) and
-[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Gameplay rules and source evidence
-remain in [docs/DESIGN.md](docs/DESIGN.md), [docs/SIM.md](docs/SIM.md),
-[docs/META.md](docs/META.md) and [docs/research/](docs/research/).
+`observe` 只含玩家可见信息；私有回放信息由 `debug_state` 单独返回。奖励和张量编码由
+训练器计算。wheel 包含 JS 和玩法数据，Node.js 需单独安装。
 
 ```powershell
-npm run golden
+node tools/golden.mjs
 uv run python python/tests/integration.py
 ```
 
-Original golden JSON remains immutable; only documented removed presentation
-fields are projected out. Gameplay comparisons are exact. No browser/assets or
-frontend dependencies are required.
+验收使用上游 0.3.0 的 288 个黄金场景及现有 Python 集成。黄金 JSON 直接来自上游，
+不可由 core 重生成。数据使用 `node tools/core-import.mjs [revision]` 导入，默认使用
+`data/core-manifest.json` 的固定提交，并记录源文件/输出 SHA-256。
 
-Import data using `node tools/core-import.mjs <revision> [output_directory]`.
-The generated manifest records source/output SHA-256 and transformation version.
-Generated tables are never edited by hand.
+`core` 是精简分支；完整上游固定在被忽略的 `.worktrees/master`（`master` 分支）。
+其中 `docs/` 保留规则、设计与历史资料。重新建立参考：
 
-Original project: [sganggs/Stronghold-Protocol](https://github.com/sganggs/Stronghold-Protocol).
-See [LICENSE](LICENSE), [NOTICE.md](NOTICE.md) and
-[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md). No monetisation or game art.
+```powershell
+git fetch upstream --tags
+git worktree add .worktrees/master master
+```
+
+项目代码采用 GPL-3.0-or-later，游戏数据保留原权利，不含美术素材，不得商业化。
+详见 [LICENSE](LICENSE)、[NOTICE.md](NOTICE.md)、[THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)。

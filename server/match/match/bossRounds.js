@@ -1,6 +1,7 @@
-// Retained gameplay methods from the 0.2.6 implementation.
+// Headless gameplay methods; upstream baseline is recorded in data/core-manifest.json.
 import { PHASE, GEO } from '../../../shared/constants.js';
 import { createRng, deriveSeed } from '../../sim/rng.js';
+import { creditedKillsOf } from '../../sim/spec.js';
 import { buildBossWave, bountySpawns } from '../waves.js';
 import { pairPlayers, bossPoolHp, SharedBossPool, hiddenEligible, BOSS_HIT_STEPS } from '../finalAssault.js';
 import { FieldRunner } from '../fields.js';
@@ -187,6 +188,7 @@ export class MatchBoss {
         if (pp && ps) {
           ps.stats.dmgDealt += Number(pp.damageDealt) || 0;
           ps.stats.kills += Number(pp.killed) || 0;
+          ps.creditedKills += creditedKillsOf(pp);
           ps.dirty(); // m.private.stats
           this._charDamageTickers(ps, pp);
         }

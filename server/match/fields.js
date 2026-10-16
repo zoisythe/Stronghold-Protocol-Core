@@ -55,7 +55,7 @@ export class FieldRunner {
 
   _runInstant() {
     const cap = Math.ceil(HARD_CAP_SECONDS / TICK);
-    while (!this.stopped && !this.done && this.ticks < cap) {
+    while (!this.stopped && !this.done && this.ticks < cap) { // loop-cap: tick cap
       this._tick();
       if (this.fields.every((f) => !f.live)) break;
     }

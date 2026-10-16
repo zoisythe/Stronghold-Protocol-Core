@@ -74,7 +74,7 @@ export class Env {
     };
     // All game battles retain full content but allocate no rendering events.
     const construct = m.newBattle.bind(m);
-    m.newBattle = (opts) => construct({ ...opts, recordEvents: false });
+    m.newBattle = (opts, mode) => construct({ ...opts, recordEvents: false }, mode);
     m.start();
     this._pump();
     return { ...this._result(controlled[0] ?? 0), seed: this.seed, resolved_setup: copy(this.setups), strategy_bans: [...this.bans] };

@@ -4,7 +4,7 @@
 import { GEO } from './constants.js';
 import { isDroppableChess } from './standIn.js';
 import { diySlotIds, validateDiyPicks } from './diy.js';
-import { cultivatedStats, isPotential, isCultivate, POTENTIAL_DEFAULT, CULTIVATE_DEFAULT } from './potential.js';
+import { cultivatedStats, isPotential, isCultivate, POTENTIAL_DEFAULT, CULTIVATE_DEFAULT, hasPotentialData } from './potential.js';
 
 // ---- tiny validators -------------------------------------------------------
 const isInt = (v, lo = -Infinity, hi = Infinity) => Number.isInteger(v) && v >= lo && v <= hi;
@@ -162,7 +162,21 @@ export function cultivationCharIds(chess, backups = null) {
  * @param {(charId: string) => boolean} isOperator
  * @returns {{ ok: true, ops: Record<string, { potential: number, cultivate: number }> } | { error: 'BAD_MSG'|'BAD_TARGET', detail: string }}
  */
-export function checkLoadoutOps(ops, isOperator) {
+export function charPotentialChanges(data, charId) {
+  if (typeof charId !== 'string' || !charId.startsWith('char_x_')) return true;
+  const chess = data?.chess;
+  if (chess && typeof chess === 'object') {
+    for (const c of Object.values(chess)) if (c?.charId === charId && hasPotentialData(c)) return true;
+  }
+  const unit = data?.backups?.units?.[charId];
+  if (unit) {
+    if (hasPotentialData(unit)) return true;
+    for (const f of Object.values(unit.forms ?? {})) if (hasPotentialData(f)) return true;
+  }
+  return false;
+}
+
+export function checkLoadoutOps(ops, isOperator, changesWithPotential = null) {
   if (ops == null) return { ok: true, ops: {} };
   if (!isLoadoutOps(ops)) return { error: 'BAD_MSG', detail: 'bad operator settings' };
   const out = {};
@@ -170,6 +184,9 @@ export function checkLoadoutOps(ops, isOperator) {
     if (typeof isOperator !== 'function' || !isOperator(id)) return { error: 'BAD_TARGET', detail: `unknown operator ${id}` };
     const potential = ops[id].potential ?? POTENTIAL_DEFAULT;
     const cultivate = ops[id].cultivate ?? CULTIVATE_DEFAULT;
+    if (potential !== POTENTIAL_DEFAULT && typeof changesWithPotential === 'function' && changesWithPotential(id) === false) {
+      return { error: 'BAD_TARGET', detail: `potential does not change ${id}` };
+    }
     if (potential === POTENTIAL_DEFAULT && cultivate === CULTIVATE_DEFAULT) continue;
     out[id] = { potential, cultivate };
   }

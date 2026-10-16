@@ -30,16 +30,8 @@ import { genericKit, genericTalents } from './generic.js';
 import { withUnitLoadouts } from '../simdata.js';
 import { isPotential } from '../../../shared/potential.js';
 
-// Content files are loaded with guarded dynamic imports: a module that fails to load (syntax error, throwing
-// top-level code, missing file) is logged and replaced by an empty module instead of breaking the server.
-async function safeImport(path) {
-  try {
-    return await import(path);
-  } catch (e) {
-    console.error(`[content] failed to load ${path}: ${e && e.stack ? e.stack.split('\n').slice(0, 3).join(' | ') : e}`);
-    return {};
-  }
-}
+// Core packages contain all built-in content; missing modules are fatal.
+const safeImport = (path) => import(path);
 
 const KIT_REGISTRY = await safeImport('./kits/index.js');
 const DOMAIN_NAMES = ['tokens', 'devices', 'enemies', 'bosses', 'bonds', 'garrisons', 'items', 'bands', 'choices'];
@@ -84,7 +76,7 @@ export function kitOf(def, reg) {
   if (!def || !reg) return undefined;
   if (isOtherBody(def)) return Object.prototype.hasOwnProperty.call(reg, def.charId) ? reg[def.charId] : undefined;
   const bare = String(def.baseId ?? def.id ?? '').replace(/_[ab]$/, '');
-  return reg[def.baseId] ?? reg[def.id] ?? reg[bare];
+  return [def.baseId, def.id, bare].map(k => Object.hasOwn(reg, k) ? reg[k] : undefined).find(Boolean);
 }
 
 /** The generic kit of an operator def; a stand-in's / 自选 piece's also carries the talents generic.js can apply exactly. */

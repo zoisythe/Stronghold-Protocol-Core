@@ -1,4 +1,4 @@
-// Retained gameplay methods from the 0.2.6 implementation.
+// Headless gameplay methods; upstream baseline is recorded in data/core-manifest.json.
 import { PHASE, GEO } from '../../../shared/constants.js';
 import { boardOrder, pieceDir } from '../board.js';
 import { bountySpawns, previewOf } from '../waves.js';

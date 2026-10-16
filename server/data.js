@@ -16,6 +16,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { forgetOfficialBounds, rememberOfficialBounds } from '../shared/content/officialBounds.js';
 
 /** Repository root (…/Stronghold-Protocol). */
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -48,8 +49,12 @@ export function deepFreeze(root) {
   return root;
 }
 
+/** data/*.json files the server never reads, so never loads: the official effects' file list (data/local-fx.json, written
+ * by tools/local-extract/fx.py, DESIGN §33 — ~1 MB the browser alone fetches, through its served view). */
+export const UNLOADED_DATA = Object.freeze(['local-fx.json']);
+
 /**
- * Read every `*.json` in `dir` into `{ [basename]: parsed }`, deep-frozen.
+ * Read every `*.json` in `dir` into `{ [basename]: parsed }`, deep-frozen (but UNLOADED_DATA).
  * Never throws: an unreadable directory yields `{}`; bad files are skipped with an error log.
  * @param {string} [dir] data directory (default ROOT/data)
  * @param {{ log?: { warn: Function, error: Function, info?: Function }, expected?: readonly string[] }} [opts]
@@ -61,7 +66,7 @@ export function loadData(dir = DATA_DIR, { log = console, expected = DATA_FILES 
   let names = [];
   try {
     names = fs.readdirSync(dir, { withFileTypes: true })
-      .filter((d) => d.isFile() && d.name.toLowerCase().endsWith('.json'))
+      .filter((d) => d.isFile() && d.name.toLowerCase().endsWith('.json') && !UNLOADED_DATA.includes(d.name.toLowerCase()))
       .map((d) => d.name)
       .sort();
   } catch (e) {
@@ -89,12 +94,18 @@ let singleton = null;
  * @returns {Readonly<Record<string, any>>}
  */
 export function getData({ dir = DATA_DIR, log = console } = {}) {
-  if (!singleton) singleton = loadData(dir, { log });
+  if (!singleton) {
+    singleton = loadData(dir, { log });
+    rememberOfficialBounds(singleton);
+  }
   return singleton;
 }
 
 /** Drop the singleton so the next getData() reloads (tests / hot reload). */
-export function resetData() { singleton = null; }
+export function resetData() {
+  singleton = null;
+  forgetOfficialBounds();
+}
 
 // ---------------------------------------------------------------------------------------------------
 // Index getters

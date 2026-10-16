@@ -1,18 +1,21 @@
-// Retained gameplay methods from the 0.2.6 implementation.
+// Headless gameplay methods; upstream baseline is recorded in data/core-manifest.json.
 import { PHASE, GEO } from '../../../shared/constants.js';
 import { deriveSeed } from '../../sim/rng.js';
 import { withBounties } from '../waves.js';
 import { planUnite } from '../unite.js';
 import { FieldRunner } from '../fields.js';
 import { DELAYS } from './common.js';
+import { previewPlayer } from '../preview.js';
 
 export class MatchCombat {
-  newBattle(opts) {
-    const full = { data: this.ds, content: this.battleContent, logger: this.log, ...opts };
+  /** Failed preview candidates are discarded; live construction failures remain explicit. */
+  newBattle(opts, { preview = false } = {}) {
+    const full = { data: this.ds, content: this.battleContent, logger: this.log, ...opts,
+      ...(preview ? { logger: {}, quiet: true } : {}) };
     try {
       return new this.BattleClass(full);
     } catch (e) {
-      this.reportError(`battle ${opts.fieldId} construct`, e);
+      if (!preview) this.reportError(`battle ${opts.fieldId} construct`, e);
       throw e;
     }
   }
@@ -32,13 +35,17 @@ export class MatchCombat {
 
   _normalBattle(ps) { return this.newBattle(this._normalOpts(ps)); }
 
-  _normalOpts(ps) {
-    const wave = this.wave;
+  /** Battle options of a player's normal field (after the onBattleStart handlers). */
+  _normalOpts(ps, { preview = false, board = ps.board } = {}) {
+    const wave = preview ? structuredClone(this.wave) : this.wave;
+    if (preview) ps = previewPlayer(ps, board);
     const input = ps.battleInput({ side: 'L', colOffset: 0 });
     // the client's list: bounty units inserted among their host action's own units, which are re-timed around them
     const spawns = withBounties(this.gd, this.round, wave, ps.bounties, ps.playerId).map((s) => ({ ...s, ownerPlayerId: ps.playerId }));
-    const ev = { input, kind: 'normal', round: this.round, spawns };
-    this.dispatch(ps, 'onBattleStart', ev);
+    const ev = { input, kind: 'normal', round: this.round, spawns, ...(preview ? { preview: true } : {}) };
+    // Preview construction failures go to the rehearsal's discard path, never Match.dispatch's live error sink.
+    if (preview) this.dispatcher.dispatch(ps, 'onBattleStart', ev);
+    else this.dispatch(ps, 'onBattleStart', ev);
     return {
       seed: deriveSeed(this.seed, `n:${this.round}:${ps.seat}`),
       kind: 'normal',

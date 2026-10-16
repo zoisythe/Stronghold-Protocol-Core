@@ -1,3 +1,7 @@
+> Core 0.3.0 retains the upstream notices below. Browser libraries, art, fonts,
+> translations and extraction/distribution tools described there are absent from
+> this branch; Node.js is installed separately. Original source: `.worktrees/master`.
+
 # Third-party notices（第三方组件声明）
 
 Stronghold Protocol's own code is licensed under **GPL-3.0-or-later** (see [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md)).

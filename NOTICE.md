@@ -1,3 +1,7 @@
+> Core 0.3.0 retains the upstream notices below. Browser libraries, art, fonts,
+> translations and extraction/distribution tools described there are absent from
+> this branch; Node.js is installed separately. Original source: `.worktrees/master`.
+
 # 版权与使用声明（NOTICE）
 
 **卫戍协议：盟约 · Stronghold Protocol** 是《明日方舟》限时玩法「卫戍协议：盟约」的**非官方同人复刻**，与上海鹰角网络科技有限公司（Hypergryph）、Yostar 及其关联方**没有任何关联**，也未获得其授权或认可。
