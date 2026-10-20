@@ -1,7 +1,7 @@
 # Headless gameplay core
 
-`core` tracks the official gameplay of upstream v0.3.0 at
-`c24e17eec3af1e6dedfa9935a6d15245cf2f4586`. The ignored `.worktrees/master`
+`core` tracks the official gameplay of upstream v0.3.1 at
+`b3deebdae4a92642c007d217a1a4573e5d3612c5`. The ignored `.worktrees/master`
 checkout retains that complete upstream release, including rules and history.
 
 Keep the existing deterministic 30 Hz simulation, complete solo/1–4 player
@@ -33,3 +33,7 @@ regenerate expectations from core. Keep temporary build/test artifacts ignored
 and clean the WSL copy after validation.
 
 Public configuration and examples: [CORE_API.md](CORE_API.md).
+
+AlphaSP's optional bounded training acceptance uses its real BERT-Base model,
+public knowledge, persistent environments and PPO optimizer. It is separate from
+gameplay acceptance: a few updates establish integration, not policy quality.

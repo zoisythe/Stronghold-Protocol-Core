@@ -27,13 +27,16 @@
 // registerAllMeta(registry) — calls each domain module's registerMeta(registry) (prep side, server boot).
 
 import { genericKit, genericTalents } from './generic.js';
+import * as KIT_REGISTRY from './kits/index.js';
 import { withUnitLoadouts } from '../simdata.js';
 import { isPotential } from '../../../shared/potential.js';
 
 // Core packages contain all built-in content; missing modules are fatal.
 const safeImport = (path) => import(path);
 
-const KIT_REGISTRY = await safeImport('./kits/index.js');
+// A static dependency also orders the registry before setup.js's static import.
+// Mixing both paths with top-level await can expose an uninitialized namespace
+// on Node 26. Missing built-in content remains a fatal module-load error.
 const DOMAIN_NAMES = ['tokens', 'devices', 'enemies', 'bosses', 'bonds', 'garrisons', 'items', 'bands', 'choices'];
 const DOMAINS = await Promise.all(DOMAIN_NAMES.map((n) => safeImport(`./${n}.js`)));
 const tokens = DOMAINS[0];

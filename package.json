@@ -1,6 +1,6 @@
 {
   "name": "stronghold-core",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "Headless Stronghold gameplay core with Python training interfaces",
   "license": "GPL-3.0-or-later",

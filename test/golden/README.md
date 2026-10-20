@@ -1,7 +1,7 @@
 # Upstream gameplay regression corpus
 
-The six JSON files are copied byte for byte from upstream v0.3.0
-`c24e17eec3af1e6dedfa9935a6d15245cf2f4586`: 49 roster, 46 bonds, 22 fields,
+The six JSON files are copied byte for byte from upstream v0.3.1
+`b3deebdae4a92642c007d217a1a4573e5d3612c5`: 49 roster, 46 bonds, 22 fields,
 21 matches, 10 stand-ins and 140 DIY scenarios (288 total).
 
 Run `node tools/golden.mjs`. Preserve scenario generation, seeds, snapshot hash

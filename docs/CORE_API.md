@@ -105,3 +105,18 @@ and is measured separately from simulation/IPC cost.
 
 Acceptance: `uv run python python/tests/integration.py`. All original gameplay
 goldens: `node tools/golden.mjs` (no browser or npm dependencies needed).
+
+Optional AlphaSP training acceptance, from the neighboring AlphaSP directory
+with its existing Python 3.12 environment and cached BERT-Base weights:
+
+```powershell
+uv run --no-sync python ../Stronghold-Protocol-Core/python/tests/alphasp_training.py --report ../Stronghold-Protocol-Core/.cache/alphasp-training.json
+```
+
+This explicitly performs real PPO backward/AdamW updates on CPU: 1 NORMAL
+environment, 8 model decisions, 2 updates, with an active-episode checkpoint
+resume between them. Public knowledge is rebuilt for the current clean core;
+temporary knowledge/checkpoints are removed on exit. The normal AlphaSP cache
+and training runs are untouched. It checks LoRA/head changes, optimizer resume,
+finite metrics and rejects private debug-state access. It does not establish
+full-game training quality, BC acceptance, throughput or GPU memory capacity.

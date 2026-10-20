@@ -3,7 +3,7 @@
 Read `docs/CORE.md` and `docs/CORE_API.md`. Full upstream rules and source evidence
 are available in `.worktrees/master/docs/` at the pinned upstream release.
 
-- Work on `core`; upstream baseline is v0.3.0 `c24e17ee`. Keep one ignored
+- Work on `core`; upstream baseline is v0.3.1 `b3deebda`. Keep one ignored
   `.worktrees/master` on `master` as an unmodified upstream reference.
 - Reuse existing Node.js logic and paths; npm as configured, `uv` for Python.
 - Preserve full solo/cooperative gameplay, deterministic math, ordering and

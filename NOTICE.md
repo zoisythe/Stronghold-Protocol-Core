@@ -1,4 +1,4 @@
-> Core 0.3.0 retains the upstream notices below. Browser libraries, art, fonts,
+> Core 0.3.1 retains the upstream notices below. Browser libraries, art, fonts,
 > translations and extraction/distribution tools described there are absent from
 > this branch; Node.js is installed separately. Original source: `.worktrees/master`.
 

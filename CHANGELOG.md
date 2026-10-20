@@ -1,5 +1,14 @@
 # Core changes
 
+## 0.3.1
+
+- Sync v0.3.1 (`b3deebda`): Cathy grants one mutation cell per match,
+  Unite runtime children do not add LP loss, Swire S3 stays open, and placement /
+  attack-range flags survive record composition. Keep plugin and presentation
+  extensions outside core.
+- Reimport official tables and copy all 288 golden expectations unchanged from
+  the release. Add optional bounded AlphaSP PPO update/checkpoint acceptance.
+
 ## 0.3.0
 
 - Sync official gameplay and AI from upstream v0.3.0 (`c24e17ee`): combat targeting,
