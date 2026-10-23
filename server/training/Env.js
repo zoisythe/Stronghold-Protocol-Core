@@ -1,7 +1,8 @@
 import { Match } from '../match/Match.js';
+import { GameData } from '../match/gamedata.js';
 import { VirtualScheduler } from '../match/scheduler.js';
 import { getData } from '../data.js';
-import { PHASE, DIFFICULTIES } from '../../shared/constants.js';
+import { PHASE, DIFFICULTIES, modeIdFor } from '../../shared/constants.js';
 import { DIRS } from '../../shared/protocol.js';
 import { FIELD, boardOrder } from '../match/board.js';
 import { bondList, offBondCounts } from '../match/bondsMeta.js';
@@ -41,6 +42,11 @@ export class Env {
     if (!Array.isArray(controlled) || new Set(controlled).size !== controlled.length || controlled.some((s) => !Number.isInteger(s) || s < 0 || s >= players)) throw new TypeError('invalid controlled_seats');
     const rehearsal = config.bot_rehearsal ?? 3;
     if (!Number.isInteger(rehearsal) || rehearsal < 0 || rehearsal > 8) throw new TypeError('bot_rehearsal must be 0..8');
+    const soloTimed = config.solo_timed === undefined ? false : config.solo_timed;
+    if (typeof soloTimed !== 'boolean') throw new TypeError('solo_timed must be boolean');
+    if (config.teacher_incremental_shadow !== undefined && typeof config.teacher_incremental_shadow !== 'boolean') throw new TypeError('teacher_incremental_shadow must be boolean');
+    if (config.teacher_plan_reuse !== undefined && typeof config.teacher_plan_reuse !== 'boolean') throw new TypeError('teacher_plan_reuse must be boolean');
+    if (config.teacher_plan_reuse && mode !== 'solo') throw new TypeError('timed teacher plan reuse supports solo only');
     this.seed = seed || 1; // Original Match seed normalisation.
     this.config = structuredClone(config);
     this.controlled = new Set(controlled);
@@ -55,7 +61,15 @@ export class Env {
     const seats = this.setups.map((setup, seat) => ({ seat, playerId: `p_${seat}`, name: `P${seat + 1}`, isBot: !this.controlled.has(seat), connected: true, ...setup }));
     const m = this.match = new Match({ mode, difficulty, seats, seed: this.seed, data: this.data,
       scheduler: this.scheduler, log: QUIET, botRehearsal: rehearsal, clientCombat: false,
-      aiPicksLast: config.ai_picks_last === true });
+      stageId: config.stage_id, aiPicksLast: config.ai_picks_last === true });
+    if (mode === 'solo' && soloTimed) {
+      // Explicit training timing only: keep solo content and the original phase
+      // transitions, but source preparation limits from the matching co-op mode.
+      const timedData = new GameData(this.data, modeIdFor('coop', difficulty));
+      Object.defineProperty(m, 'soloUntimed', { get: () => false });
+      m.gd.prepTime = timedData.prepTime.bind(timedData);
+      m.gd.timer = timedData.timer.bind(timedData);
+    }
     // The original constructor excludes bot loadouts; training configuration may
     // explicitly supply them. Apply through the same checked setup methods.
     for (const ps of m.order) if (ps.isBot) {
@@ -183,6 +197,8 @@ export class Env {
     if (!Number.isFinite(elapsed_ms) || elapsed_ms < 0) return { ...this._result(seat), error: 'BAD_ELAPSED' };
     const source = action?.source ?? (action?.t === 'g.wait' ? 'timeout' : 'model');
     if (!['model', 'teacher', 'timeout'].includes(source)) return { ...this._result(seat), error: 'BAD_SOURCE' };
+    const oldPhase = this.match.phase, oldRound = this.match.round;
+    const elapsedBudget = this.match.deadline ? Math.min(elapsed_ms, Math.max(0, this.match.deadline - this.scheduler.now())) : elapsed_ms;
     const restore = checkpoint(this.match);
     let res;
     try { res = this._perform(seat, action, elapsed_ms); }
@@ -190,11 +206,22 @@ export class Env {
     if (res.error) { restore(); return { ...this._result(seat), ...res }; }
     this.history.push({ seat, action: structuredClone(action), elapsed_ms, source });
     this.revision++;
-    if (this.advice?.seat === seat && this.advice.revision === this.revision - 1 && elapsed_ms === 0 && key(this.advice.actions[0]) === key(action)) {
+    if (this.advice?.seat === seat && this.advice.revision === this.revision - 1 && (elapsed_ms === 0 || (this.config.teacher_plan_reuse && oldPhase === PHASE.PREP)) && key(this.advice.actions[0]) === key(action)) {
       this.advice.actions.shift(); this.advice.revision = this.revision;
     } else this.advice = null;
-    if (elapsed_ms > 0) this.scheduler.advance(elapsed_ms);
+    // An action cannot spend the next phase's preparation budget.
+    if (elapsed_ms > 0) {
+      const until = this.scheduler.now() + elapsedBudget;
+      let callbacks = 0;
+      while (!this.match.ended && this.match.phase === oldPhase && this.match.round === oldRound) {
+        if (++callbacks > 1000000) throw new Error('action timer callback limit exceeded');
+        const next = this.scheduler.nextAt();
+        if (next == null || next > until) { this.scheduler.advance(Math.max(0, until - this.scheduler.now())); break; }
+        this.scheduler.runNext();
+      }
+    }
     this._pump();
+    if (this.match.phase !== oldPhase || this.match.round !== oldRound || this.match.ended) this.advice = null;
     return this._result(seat);
   }
 
@@ -262,15 +289,35 @@ export class Env {
   teacher_action(seat = 0) {
     const ps = this._player(seat);
     if (!this.decision_seats().includes(seat)) return null;
-    if (this.advice?.seat === seat && this.advice.revision === this.revision && this.advice.actions.length) return copy(this.advice.actions[0]);
-    const shadow = new Env({ data: this.data });
-    try {
+    if (this.advice?.seat === seat && this.advice.revision === this.revision && this.advice.actions.length) {
+      const action = this.advice.actions[0];
+      if (!this.config.teacher_plan_reuse) return copy(action);
+      // Probe the next cached action through the real rule path, then restore.
+      const restore = checkpoint(this.match);
+      let legal;
+      try { legal = !this._perform(seat, action, 0).error; } finally { restore(); }
+      if (legal) return copy(action);
+      this.advice = null;
+    }
+    // Optional mirror: replay each real event once. Planning is rolled back in
+    // this detached match; the original seed/revision teacher RNG is unchanged.
+    const incremental = this.config.teacher_incremental_shadow === true;
+    let shadow = incremental ? this.teacherMirror : null;
+    if (!shadow) {
+      shadow = new Env({ data: this.data });
       shadow.reset(this.seed, this.config);
-      for (const event of this.history) {
+      if (incremental) { this.teacherMirror = shadow; this.teacherMirrorCursor = 0; }
+    }
+    let restorePlan = null;
+    try {
+      const cursor = incremental ? this.teacherMirrorCursor : 0;
+      for (const event of this.history.slice(cursor)) {
         const result = shadow.step(event.seat, event.action, event.elapsed_ms);
         if (result.error) throw new Error(`shadow replay refused ${result.error}`);
       }
+      if (incremental) this.teacherMirrorCursor = this.history.length;
       const m = shadow.match, player = shadow._player(seat);
+      if (incremental) restorePlan = checkpoint(m);
       const actions = [];
       // Original bot planning may consume its private tie-breaking RNG, never
       // the real match's bot stream or a teammate's stream.
@@ -305,7 +352,14 @@ export class Env {
       if (!actions.length) throw new Error('teacher produced no legal action');
       this.advice = { seat, revision: this.revision, actions: copy(actions) };
       return copy(actions[0]);
-    } finally { shadow.close(); }
+    } catch (error) {
+      // A failed synchronization is never silently reused or reset.
+      if (incremental) { this.teacherMirror?.close(); this.teacherMirror = null; }
+      throw error;
+    } finally {
+      if (restorePlan) restorePlan();
+      if (!incremental) shadow.close();
+    }
   }
 
   debug_state() {
@@ -318,5 +372,5 @@ export class Env {
       players: m.order.map((ps) => ({ seat: ps.seat, hand: ps.hand, temp: ps.temp, board: [...ps.board], funds: ps.funds, lp: ps.lp, layers: ps.layers, counters: ps.counters })), outcome: m.outcome });
   }
 
-  close() { if (this.match) this.match.dispose(); this.match = null; this.advice = null; }
+  close() { this.teacherMirror?.close(); this.teacherMirror = null; this.teacherMirrorCursor = 0; if (this.match) this.match.dispose(); this.match = null; this.advice = null; }
 }

@@ -92,6 +92,24 @@
       "generated_sha256": "35132a3d5905eb7b3dbf41bee1bc3cfb22b83e6314b14b21a9a4bc3a3789c925",
       "source_bytes": 137772,
       "generated_bytes": 137773
+    },
+    "data/i18n/en.json": {
+      "source_sha256": "3359e632a6ca9412c0fcfcde32f437fd6d8d557fe91c01be85108cbb171391ed",
+      "generated_sha256": "3359e632a6ca9412c0fcfcde32f437fd6d8d557fe91c01be85108cbb171391ed",
+      "source_bytes": 2494535,
+      "generated_bytes": 2494535
+    },
+    "public/i18n/en.json": {
+      "source_sha256": "4b928e113f4380c85d0ac0ac5e23ee06912ca45df360eca45e91efffed30a19a",
+      "generated_sha256": "4b928e113f4380c85d0ac0ac5e23ee06912ca45df360eca45e91efffed30a19a",
+      "source_bytes": 155287,
+      "generated_bytes": 155287
+    },
+    "shared/i18nData.js": {
+      "source_sha256": "9fc3611dff77ffb4d969699fd1bfc6c3e0de102d1f166c3502482ed4617b4430",
+      "generated_sha256": "9fc3611dff77ffb4d969699fd1bfc6c3e0de102d1f166c3502482ed4617b4430",
+      "source_bytes": 8564,
+      "generated_bytes": 8564
     }
   }
 }

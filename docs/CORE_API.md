@@ -63,6 +63,10 @@ session explicitly after diagnosing the failure.
 | `players` | 1 for solo, 2 for coop; 1–4, solo requires 1 |
 | `controlled_seats` | `[0]`; other seats use the original bot; `[]` runs all bots |
 | `bot_rehearsal` | 3, configurable 0–8 |
+| `stage_id` | null; optional active positive-weight map supported by the selected mode; original map draw still consumes its RNG |
+| `teacher_plan_reuse` | false; solo-only continuation of a teacher plan across timed actions within one prep phase, checking the next action through the real rule path; invalidated on phase/round changes |
+| `teacher_incremental_shadow` | false; true incrementally synchronizes an isolated teacher mirror and rolls planning back after each query |
+| `solo_timed` | false; true makes solo training use the same-difficulty multiplayer phase timers and round-by-round preparation limits |
 | `setup` / `setups` | shared baseline / per-seat baselines; absent entries use defaults |
 | `perturbation_probability` | 0; probability in [0,1] |
 | `strategy` | `{ "mode": "model" }`; mode `fixed/random/model`, optional `fixed` id, `bans` ids and `ban_count` 0–3 |
@@ -80,6 +84,19 @@ Seed 0 is normalised to 1, matching the existing Match implementation.
 elapsed time after the action, before returning the next decision. Queries never
 advance time. `source` is optional action metadata (`model`, `teacher`, `timeout`);
 normal actions default to model and explicit waiting defaults to timeout.
+
+Solo phases are untimed in the original game. Trainers can explicitly pass
+`solo_timed: true` to use multiplayer timing: the same difficulty's multiplayer
+`GameData.prepTime(round)` supplies each preparation limit, while the existing
+draft/phase timer paths run unchanged. For example NORMAL preparation is 65 s in
+rounds 1–3, 95 s in rounds 4–5 and follows the multiplayer table thereafter.
+At expiry the original `prepDeadline()` resolves pending choices/temporary
+inventory and starts the real battle. No trainer action is inserted, legal
+candidates stay complete, and solo gameplay/waves/results still use solo data.
+The option has no effect on cooperative matches. Advance this clock with
+accepted actions' positive `elapsed_ms`; queries and rejected actions still do
+not advance time. Record the reset option and every action duration for
+deterministic replay, including isolated teacher shadows.
 
 Observers receive their own hand, funds, shop, choices and setup; teammates expose
 public boards, equipment, LP, level, strategy and public bond strips, never hand
@@ -105,18 +122,9 @@ and is measured separately from simulation/IPC cost.
 
 Acceptance: `uv run python python/tests/integration.py`. All original gameplay
 goldens: `node tools/golden.mjs` (no browser or npm dependencies needed).
+The opt-in solo timer's focused real-game/replay check is
+`node tools/check-timed-solo.mjs`.
 
-Optional AlphaSP training acceptance, from the neighboring AlphaSP directory
-with its existing Python 3.12 environment and cached BERT-Base weights:
+Model training acceptance belongs to AlphaSP; use its current ModernBERT configuration and validation documentation. The obsolete BERT-specific PPO probe has been retired.
 
-```powershell
-uv run --no-sync python ../Stronghold-Protocol-Core/python/tests/alphasp_training.py --report ../Stronghold-Protocol-Core/.cache/alphasp-training.json
-```
-
-This explicitly performs real PPO backward/AdamW updates on CPU: 1 NORMAL
-environment, 8 model decisions, 2 updates, with an active-episode checkpoint
-resume between them. Public knowledge is rebuilt for the current clean core;
-temporary knowledge/checkpoints are removed on exit. The normal AlphaSP cache
-and training runs are untouched. It checks LoRA/head changes, optimizer resume,
-finite metrics and rejects private debug-state access. It does not establish
-full-game training quality, BC acceptance, throughput or GPU memory capacity.
+Timed actions are bounded by the current phase deadline and cannot spend the next phase budget. English localization packs are imported for trainer-owned views; gameplay continues to use the authoritative original data.

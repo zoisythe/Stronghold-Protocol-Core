@@ -40,5 +40,16 @@ for (const path of files) {
   await save(join(output, name), generated);
   manifest.files[name] = { source_sha256: sha(source), generated_sha256: sha(generated), source_bytes: source.length, generated_bytes: generated.length };
 }
+// Retain immutable English localization and its pure overlay implementation.
+mkdirSync(join(output, 'i18n'), { recursive: true });
+for (const [sourcePath, destination] of [
+  ['data/i18n/en.json', join(output, 'i18n/en.json')],
+  ['public/i18n/en.json', join(output, 'i18n/ui-en.json')],
+  ['shared/i18nData.js', join(root, 'shared/i18nData.js')],
+]) {
+  const bytes = git('show', `${revision}:${sourcePath}`);
+  await save(destination, bytes);
+  manifest.files[sourcePath] = { source_sha256: sha(bytes), generated_sha256: sha(bytes), source_bytes: bytes.length, generated_bytes: bytes.length };
+}
 await save(join(output, 'core-manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 console.log(`Imported ${files.length} gameplay tables from ${revision}`);

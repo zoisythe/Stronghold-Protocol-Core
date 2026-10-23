@@ -8,7 +8,7 @@ Keep the existing deterministic 30 Hz simulation, complete solo/1–4 player
 cooperative rules, shops, economy, inventory, choices, strategies, bonds, Unite,
 shared boss pools, stand-ins, four DIY slots and the symbolic AI's real battle
 rehearsals. HTTP/WebSocket, browser combat/AI delegation, UI, art/audio,
-localisation packs, plugin authoring/loading/DSL and distribution tools are outside
+trainer presentation beyond the retained English localization overlay, plugin authoring/loading/DSL and distribution tools are outside
 the training core. DIY selections of built-in operators remain supported.
 
 `server/sim/` runs combat; `server/match/` owns rounds and player state.
@@ -20,6 +20,11 @@ Player observations exclude private teammate state. Queries and rejected actions
 must preserve gameplay, random streams and time. Teacher advice runs in an isolated
 shadow match. Simulation/content errors are errors, never synthetic outcomes.
 Setup perturbation uses its own seeded stream and records resolved setup for replay.
+
+Training may explicitly set `solo_timed: true` to use the same difficulty's
+multiplayer phase timers and round-by-round preparation limits for solo play.
+This opt-in is contained in the training adapter; ordinary gameplay timers,
+solo content and default untimed solo behavior remain unchanged.
 
 Generated gameplay tables are imported with `node tools/core-import.mjs`; the
 manifest records the source commit and source/output SHA-256. Text used by rules
@@ -34,6 +39,6 @@ and clean the WSL copy after validation.
 
 Public configuration and examples: [CORE_API.md](CORE_API.md).
 
-AlphaSP's optional bounded training acceptance uses its real BERT-Base model,
-public knowledge, persistent environments and PPO optimizer. It is separate from
-gameplay acceptance: a few updates establish integration, not policy quality.
+AlphaSP owns ModernBERT training acceptance and model dependencies. See the neighboring project's docs/VALIDATION.md; gameplay acceptance remains independent of model training.
+
+The data importer also retains the pinned English data/UI overlays and pure overlay helper for read-only trainer views. The simulator itself does not translate rule data. Optional teacher_incremental_shadow keeps a detached replay mirror, checkpoints its planning, and preserves the original seed/revision advice semantics.

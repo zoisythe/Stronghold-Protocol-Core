@@ -131,7 +131,8 @@ export class Match {
 
     // per-match setup (DESIGN §6.5)
     const setup = setupMatchWaves(this.gd, this.rngSetup);
-    this.stageId = setup.stageId;
+    if (opts.stageId != null && (!(this.gd.mode.stages || []).includes(opts.stageId) || !this.gd.stage(opts.stageId) || this.gd.stage(opts.stageId).active === false || !(Number(this.gd.stage(opts.stageId).weight) > 0))) throw new TypeError('unavailable stage for this mode');
+    this.stageId = opts.stageId ?? setup.stageId;
     this.stage = this.stageId ? this.gd.stage(this.stageId) : null;
     this.factions = setup.factions;
     this.bossId = setup.bossId;
