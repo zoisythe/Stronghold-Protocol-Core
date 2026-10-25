@@ -1,5 +1,17 @@
 # Core changes
 
+## 0.3.3
+
+- Sync v0.3.3 (`f07b8965`), including the 0.3.2 attack settlement pipeline,
+  enemy/operator fixes, shared Duck Lord draws, fresh Hidden Core pairings,
+  preparation-start grants and the improved Symbolic AI's real boss rehearsals.
+- Retain all four official gameplay versions and the 0.3.3 bench-swap behavior.
+  Python Env/BatchEnv select a version per session with isolated worker caches;
+  first-period solo timers and opt-in unlimited time follow upstream rules.
+- Import 60 trimmed gameplay tables with SHA-256 provenance and copy all four
+  release golden corpora unchanged. Keep English overlays and training features;
+  omit UI, art, plugins, external AI services and network rehearsal facilities.
+
 ## 0.3.1
 
 - Sync v0.3.1 (`b3deebda`): Cathy grants one mutation cell per match,

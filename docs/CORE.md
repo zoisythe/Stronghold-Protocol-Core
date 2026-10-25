@@ -1,7 +1,7 @@
 # Headless gameplay core
 
-`core` tracks the official gameplay of upstream v0.3.1 at
-`b3deebdae4a92642c007d217a1a4573e5d3612c5`. The ignored `.worktrees/master`
+`core` tracks the official gameplay of upstream v0.3.3 at
+`f07b8965061bbc311ad7aa815879b09264a1e47d`. The ignored `.worktrees/master`
 checkout retains that complete upstream release, including rules and history.
 
 Keep the existing deterministic 30 Hz simulation, complete solo/1–4 player
@@ -36,6 +36,25 @@ reimport data, and copy that release's golden JSON unchanged. Run the upstream
 golden corpus and the compact Python integration on Windows and WSL. Do not
 regenerate expectations from core. Keep temporary build/test artifacts ignored
 and clean the WSL copy after validation.
+
+The four official gameplay versions are retained, including historical operator
+kits and rules. The default is `act2autochess` (second period, lower half).
+Historical tables live under `data/versions/` and use the same asset/settlement
+trimming and source hashes. Python sessions select `version` at construction;
+workers initialize that version's data before importing gameplay modules, so
+module caches cannot mix operator identities between versions. Local built-in
+bot policies are retained; external AI services, browser rehearsal delegation,
+network simulation pools and room/version voting remain outside core.
+
+Local v0.3.3 acceptance (2026-10-25): all four upstream corpora pass on Windows
+(Node 24.22.1) and WSL (Node 26.12.1): 288 default, 269 second-period upper,
+220 first-period lower and 218 first-period upper scenarios, 995 per platform.
+All 24 golden Git blobs equal the release, and all 63 manifest source/output
+hash pairs verify. The compact Python integration passes on Windows (3.15.1)
+and WSL (3.13.17), including a complete 155-action teacher match and historical
+single/batch isolation. Timed-solo replay, wheel build/content checks and ESLint
+(0 errors, 38 warnings) pass. The WSL copy is cleaned after acceptance, retaining
+the empty `/home/zoisythe/.cache/stronghold-core-integration` directory.
 
 Public configuration and examples: [CORE_API.md](CORE_API.md).
 

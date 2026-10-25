@@ -16,7 +16,7 @@ class BuildCore(build_py):
         if target.exists():
             rmtree(target)
         target.mkdir(parents=True, exist_ok=True)
-        for directory in ("server", "shared", "data"):
+        for directory in ("server", "shared", "data", "types"):
             copytree(root / directory, target / directory, dirs_exist_ok=True)
         for filename in ("package.json", "LICENSE", "NOTICE.md", "THIRD-PARTY-NOTICES.md"):
             copy2(root / filename, target / filename)

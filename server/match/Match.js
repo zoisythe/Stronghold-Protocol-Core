@@ -1,3 +1,5 @@
+import { versionOfData } from '../../shared/versions.js';
+import { getBotStrategy } from './botStrategies.js';
 import { PHASE, modeIdFor } from '../../shared/constants.js';
 import { Battle } from '../sim/Battle.js';
 import { DataSource } from '../sim/simdata.js';
@@ -52,6 +54,9 @@ export class Match {
     this.broadcastFn = opts.broadcast || (() => {});
     this.onEndFn = opts.onEnd || (() => {});
     this.data = opts.data && typeof opts.data === 'object' ? opts.data : {};
+    this.version = this.data.config?.version ? versionOfData(this.data) : null;
+    if (!Object.hasOwn(this.data.config?.modes || {}, this.modeId)) throw new RangeError(`Mode ${this.modeId} is unavailable in ${versionOfData(this.data)}`);
+    this.bot = getBotStrategy(opts.botStrategy);
     this.gd = new GameData(this.data, this.modeId);
     if (!this.difficulty) this.difficulty = this.gd.difficulty;
     this.isSolo = this.mode === 'solo' || this.gd.isSolo;
@@ -164,7 +169,8 @@ export class Match {
     this.setupRevision = 0;
     this.setupVote = null;
     this._setupVoteSeq = 0;
-    this._lastSetupVoteAt = -Infinity;
+    /** @type {Map<string, number>} last accepted 重刷本局 start per seat (30 s cooldown; DESIGN §28.21) */
+    this._rerollStartAt = new Map();
     this._turnTimer = null;
     this._pubDirty = false;
     this._pubTimer = null;
@@ -183,7 +189,8 @@ export class Match {
     this.sp = null;
     this.wave = null;
     this.bossWaves = null;
-    this.bossPairs = null; // drawn once per match; the hidden round retains partners and sides
+    this.bossPairs = null; // drawn for the Final Assault, drawn anew for the Hidden Core (GitHub #845, DESIGN §35.27)
+    this.bossPairsRound = null; // the round whose first plan drew bossPairs (a re-plan after a departure keeps them)
     this.fields = [];
     this.runner = null;
     /** playerId → fieldId */

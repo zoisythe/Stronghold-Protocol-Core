@@ -1,7 +1,7 @@
 // Runtime numeric bounds from upstream v0.3.0, computed from the retained official tables.
 import { dataBound } from './limits.js';
 import { TEXT_COUNT_PATTERNS } from './textPatterns.js';
-import { textFinite } from './textNumber.js';
+import { createTextFiniteReader } from './textNumber.js';
 
 /**
  * Tables walked for both the maximum and the check. choices, garrisons and tokens are included so a higher
@@ -88,10 +88,11 @@ function visit(node, table, path, fn) {
 
 function scanText(data) {
   const text = new Map();
+  const readers = TEXT_COUNT_PATTERNS.map(p => ({ id: p.id, read: createTextFiniteReader(p.re) }));
   const walk = (node) => {
     if (typeof node === 'string') {
-      for (const p of TEXT_COUNT_PATTERNS) {
-        const n = textFinite(node, p.re, NaN);
+      for (const p of readers) {
+        const n = p.read(node, NaN);
         if (Number.isFinite(n) && n >= 0) bump(text, p.id, n);
       }
       return;

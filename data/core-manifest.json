@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "transform_version": 1,
-  "source_revision": "b3deebdae4a92642c007d217a1a4573e5d3612c5",
+  "transform_version": 2,
+  "source_revision": "f07b8965061bbc311ad7aa815879b09264a1e47d",
   "files": {
     "backups.json": {
       "source_sha256": "3df06b7d5bfacba9d3d5a7afafb98adb799a32b0fadf7dd1ddea435144195854",
@@ -87,6 +87,276 @@
       "source_bytes": 138571,
       "generated_bytes": 136790
     },
+    "versions/act1autochess-v1_1/backups.json": {
+      "source_sha256": "66ae4343e2f064791b3bd76951d92baf712eb9c69d03475fea59e4f19dee96b8",
+      "generated_sha256": "91ac3029053a9f1b82bfbf8cd8cf437204700afc17cc3f6f156b137b74413e34",
+      "source_bytes": 1991913,
+      "generated_bytes": 1971547
+    },
+    "versions/act1autochess-v1_1/bands.json": {
+      "source_sha256": "dddc2d280c273a112341d6a184555d66eb289067e67ba5b14acafa41faa632c8",
+      "generated_sha256": "1e2cdba8cf3ead9be46385189eb027d032e1cec32adaeb99924967ea264c5111",
+      "source_bytes": 17673,
+      "generated_bytes": 17674
+    },
+    "versions/act1autochess-v1_1/bonds.json": {
+      "source_sha256": "80f006aca0439976958f17268afcf76a8cb9188f656319bae472dd582b6ee9c9",
+      "generated_sha256": "12d336d685fd7daf08a210ac6a91a9946251bb196f4ccf36b03eb1d00343e938",
+      "source_bytes": 48624,
+      "generated_bytes": 48625
+    },
+    "versions/act1autochess-v1_1/bosses.json": {
+      "source_sha256": "0f23b0bc815bdc60f11d48eff0397cc98d0ea5be497b05df0b9a46f617793537",
+      "generated_sha256": "43bbf2c07a1b319f5b237aef76b366dcad5ef767dc149d51cded9b028bf3cf52",
+      "source_bytes": 14631,
+      "generated_bytes": 14632
+    },
+    "versions/act1autochess-v1_1/chess.json": {
+      "source_sha256": "cfcd56dc722354d6d8753efd9a91264608c604f02b5475bdf6727e4450032985",
+      "generated_sha256": "20e8acd8ad346dfa61adac207d130923194c017b93ff74450f6282b7c308acc8",
+      "source_bytes": 1379569,
+      "generated_bytes": 1349054
+    },
+    "versions/act1autochess-v1_1/choices.json": {
+      "source_sha256": "0dc91498e0c21e3819862d452aff47fb99ff49a07ad3e7bba1e8dc4f270e34b4",
+      "generated_sha256": "b254e7c1634d6641b552387c9d4820f3995ec19d644e44d8d5e9c0394d7bd82c",
+      "source_bytes": 89717,
+      "generated_bytes": 89718
+    },
+    "versions/act1autochess-v1_1/config.json": {
+      "source_sha256": "ed587f5dd9da75dc462b52acfb8b46336edc1cf6653c187b53a25ffcc321f98c",
+      "generated_sha256": "8f9ec27b90531e215db56b7b21b8dfa607fb8a06135b594da73f86e3e2c1d83c",
+      "source_bytes": 52629,
+      "generated_bytes": 46223
+    },
+    "versions/act1autochess-v1_1/effects.json": {
+      "source_sha256": "d6e5da49f132f5578538dca02e069f60c0b1772590526da7dab9913712d99b6c",
+      "generated_sha256": "ec2a552c0f63012edb08463321b4bf10b0f0c0c86796bc0996f0fd77aea9ac36",
+      "source_bytes": 188319,
+      "generated_bytes": 188320
+    },
+    "versions/act1autochess-v1_1/enemies.json": {
+      "source_sha256": "419a7b427e0bf3e9a018c57cbc3c728ee9e19fb445072e48d04c4b9488b1e959",
+      "generated_sha256": "d5df4b86b6824428dd9b02e25ee4da3220a2d201082a8241d936c9b1dacec6b8",
+      "source_bytes": 322684,
+      "generated_bytes": 322685
+    },
+    "versions/act1autochess-v1_1/factions.json": {
+      "source_sha256": "b33989984be00a36dd8f019eab1b5b39b289ac911e26fdd125d6713b2800b6ab",
+      "generated_sha256": "4640c1bbf74498671a8c5aea5ad47a40c56869b3e5ad5c67fefa29470aab5cff",
+      "source_bytes": 22015,
+      "generated_bytes": 22016
+    },
+    "versions/act1autochess-v1_1/garrisons.json": {
+      "source_sha256": "656cb973157e7726f85ec6489e6be5295adeb376babb73a38919692caa338d19",
+      "generated_sha256": "a74011870e599e51be4598dc7d1657bf03cfe13d1fcbff8d2ef497fd84d757d3",
+      "source_bytes": 98203,
+      "generated_bytes": 98204
+    },
+    "versions/act1autochess-v1_1/items.json": {
+      "source_sha256": "dcb38e17ed90f6ebe14e84c4cd6e9fcd289897cde3b2a8d83f965b9cdb15bb42",
+      "generated_sha256": "c18e9d0fee6bf57871841e8053dad2857d611d51888e34c2e20cf4cd21bc7bdb",
+      "source_bytes": 129183,
+      "generated_bytes": 129184
+    },
+    "versions/act1autochess-v1_1/stages.json": {
+      "source_sha256": "a669aee54dcc8ebfdd426b6d4773879780e95ca1cddd060959ebf786fcbeca59",
+      "generated_sha256": "dcbee5691da7de54e7157c8a3ca6738f83d8cefeb76cdca76475bd61b980f7d4",
+      "source_bytes": 191942,
+      "generated_bytes": 191943
+    },
+    "versions/act1autochess-v1_1/tokens.json": {
+      "source_sha256": "d6adfd8c0e21fc32199fdab49c45f6adf1fa3e8c733b5bee1e488cf931415e7f",
+      "generated_sha256": "8013a0d0eeadb83b4ad0f83460cef96281fc46c7cfe61652ec627677f12884e3",
+      "source_bytes": 71401,
+      "generated_bytes": 70398
+    },
+    "versions/act1autochess-v1_1/waves.json": {
+      "source_sha256": "aae472ccb20095aed32db91175d9b5dbd06f53686db7ea220598f994c06b23bc",
+      "generated_sha256": "390518334c7861600715129456ce6ab1a2caae6cdf7e03df38d3d354a144b367",
+      "source_bytes": 125705,
+      "generated_bytes": 125706
+    },
+    "versions/act1autochess/backups.json": {
+      "source_sha256": "3ef30b369da8d7aaeada47d973618f4b1d79ae8ddadc32da37995551981921d3",
+      "generated_sha256": "16c2237dfb3840a28955310b60146c1fa9c187d3f56d72941c072212fe75b703",
+      "source_bytes": 2074498,
+      "generated_bytes": 2053684
+    },
+    "versions/act1autochess/bands.json": {
+      "source_sha256": "005bfd32e440eb07edbfe5e5598e3ecf0b06ce85ff6e93e48727e3c19c874b7a",
+      "generated_sha256": "bd53a63a3102378b91cf4d281c4fa2f1ae35e500d0d0106f0d2076a45a22594b",
+      "source_bytes": 25655,
+      "generated_bytes": 25656
+    },
+    "versions/act1autochess/bonds.json": {
+      "source_sha256": "3651ad3fc9e8deddb202fd690e79e0d7431ff247e7265ac7cda63df34a48d455",
+      "generated_sha256": "aba2fd521847aa9fd2dd3ddb112448d182de93e1806578df1efebefeffbfd355",
+      "source_bytes": 49639,
+      "generated_bytes": 49640
+    },
+    "versions/act1autochess/bosses.json": {
+      "source_sha256": "0f23b0bc815bdc60f11d48eff0397cc98d0ea5be497b05df0b9a46f617793537",
+      "generated_sha256": "43bbf2c07a1b319f5b237aef76b366dcad5ef767dc149d51cded9b028bf3cf52",
+      "source_bytes": 14631,
+      "generated_bytes": 14632
+    },
+    "versions/act1autochess/chess.json": {
+      "source_sha256": "023f52026479e3f36d48832f46d3dbdf6933056fd229372a0f512fde0710fc20",
+      "generated_sha256": "b1dd93573102cef08f70de770f421cf7dc6533c9539485f61d2e55e960fd2310",
+      "source_bytes": 1380633,
+      "generated_bytes": 1350118
+    },
+    "versions/act1autochess/choices.json": {
+      "source_sha256": "5dfeb432f3f6d672f252064e5cd5922829b761b588e6abe2ad84c1e807989b32",
+      "generated_sha256": "d4b4860766c73abd38d7ee963d6ec1c803182f01eec739e4c0605c473fa23d25",
+      "source_bytes": 89717,
+      "generated_bytes": 89718
+    },
+    "versions/act1autochess/config.json": {
+      "source_sha256": "389f5c082f7a72ba6ced63776642bb2d863081fb457b20b4fe16f56cf69ff93c",
+      "generated_sha256": "81009a0b648fe2824291b29ccf9d8d2bb0c9f2f102136692889ab853512c4ce7",
+      "source_bytes": 53307,
+      "generated_bytes": 46218
+    },
+    "versions/act1autochess/effects.json": {
+      "source_sha256": "8a5adbd744605c029b50c66b0addf0816688a0dd806e7e085377d992f46d9515",
+      "generated_sha256": "5199f23e426182284b623228265b6af9a265ffbf356599f6bfb07b3948b4872e",
+      "source_bytes": 188490,
+      "generated_bytes": 188491
+    },
+    "versions/act1autochess/enemies.json": {
+      "source_sha256": "b3dc08fed79d870bc4e9239decc51ec3286cd3a07e7f9376512fd65940ead6fe",
+      "generated_sha256": "6ffadfbe5bae707f83f87ec0c12a0f3ea3c0ef6e9f583badf4fa7de46fdde65b",
+      "source_bytes": 322563,
+      "generated_bytes": 322564
+    },
+    "versions/act1autochess/factions.json": {
+      "source_sha256": "b33989984be00a36dd8f019eab1b5b39b289ac911e26fdd125d6713b2800b6ab",
+      "generated_sha256": "4640c1bbf74498671a8c5aea5ad47a40c56869b3e5ad5c67fefa29470aab5cff",
+      "source_bytes": 22015,
+      "generated_bytes": 22016
+    },
+    "versions/act1autochess/garrisons.json": {
+      "source_sha256": "531255acb6b8c2c69e71bc5e539ca6556f2af04d463e93c11c3c05c1c2697333",
+      "generated_sha256": "d992e66c2f845fcc26eceb99978300d57bae1700cf27208ee560cc4eb6e48ce1",
+      "source_bytes": 100782,
+      "generated_bytes": 100783
+    },
+    "versions/act1autochess/items.json": {
+      "source_sha256": "dcb38e17ed90f6ebe14e84c4cd6e9fcd289897cde3b2a8d83f965b9cdb15bb42",
+      "generated_sha256": "c18e9d0fee6bf57871841e8053dad2857d611d51888e34c2e20cf4cd21bc7bdb",
+      "source_bytes": 129183,
+      "generated_bytes": 129184
+    },
+    "versions/act1autochess/stages.json": {
+      "source_sha256": "a669aee54dcc8ebfdd426b6d4773879780e95ca1cddd060959ebf786fcbeca59",
+      "generated_sha256": "dcbee5691da7de54e7157c8a3ca6738f83d8cefeb76cdca76475bd61b980f7d4",
+      "source_bytes": 191942,
+      "generated_bytes": 191943
+    },
+    "versions/act1autochess/tokens.json": {
+      "source_sha256": "e771abb001c2fc8160a755720cf4a7d9be4d014c4514156c44b34b8fa86a00ed",
+      "generated_sha256": "233e895f514aa28e8d8c36a46fb4cf7471d761d84e670291397898c9a965a5ca",
+      "source_bytes": 71398,
+      "generated_bytes": 70395
+    },
+    "versions/act1autochess/waves.json": {
+      "source_sha256": "e7b969dd1799a733dda956aef97d136bb9a090e7296fae4b8e8cd16b8b42a80f",
+      "generated_sha256": "1a397222b6a5959b5610a1a0b2196b38e7c5e9faacb9943bcff2a08502ccef01",
+      "source_bytes": 125705,
+      "generated_bytes": 125706
+    },
+    "versions/act2autochess-v2_1/backups.json": {
+      "source_sha256": "17419d3a4ae4eb3fda150b68b4bd1e4aebe8873357235445fac6c5d649ce9632",
+      "generated_sha256": "56160beaf635cd45cc8ad1e0eb8bc8956b8ac3e8407f8677c6809955b5124817",
+      "source_bytes": 1910561,
+      "generated_bytes": 1890944
+    },
+    "versions/act2autochess-v2_1/bands.json": {
+      "source_sha256": "b92505dd1dde36db5dc357b93afac26a8c09a9af51a9b7f52a72af5c35ae72af",
+      "generated_sha256": "915307fc20c5d413035c6be41087c68d159ab6ba7a2bf3e6e763292da7f6f5b5",
+      "source_bytes": 31460,
+      "generated_bytes": 31461
+    },
+    "versions/act2autochess-v2_1/bonds.json": {
+      "source_sha256": "bb9411c64c63331c17c5bb59730bf08b78021ded55b743bab35a35e2b934ba20",
+      "generated_sha256": "a8f8932d04ddf46053aadf69b723f6b2c9efd5a2717d9f54855c511823399b40",
+      "source_bytes": 68634,
+      "generated_bytes": 68635
+    },
+    "versions/act2autochess-v2_1/bosses.json": {
+      "source_sha256": "a80c3b9afaef8fd996d02c274cba5c1210f938b9042efe9bb75196d769e96ea8",
+      "generated_sha256": "34256370aa84a1b46f5c21e03cc6b5e354f906b846276fb654f683eb1f943d29",
+      "source_bytes": 16707,
+      "generated_bytes": 16708
+    },
+    "versions/act2autochess-v2_1/chess.json": {
+      "source_sha256": "4cf2b11280c639afe9866d3b93490cd3786fa966be3d834e22297760c3cc78f9",
+      "generated_sha256": "82c6458f2f400d46843f882851db9c6f89d618b12472b1b77e99b3ec0d0aa219",
+      "source_bytes": 1674075,
+      "generated_bytes": 1637080
+    },
+    "versions/act2autochess-v2_1/choices.json": {
+      "source_sha256": "3fad8d0af25230b89e3bda9d960e78807c80cedca58f0efade82431ac20400d1",
+      "generated_sha256": "7c72e37b6b2e3359be14e3ff40237da5b8d424d920537bb39638263fafda5761",
+      "source_bytes": 119659,
+      "generated_bytes": 119660
+    },
+    "versions/act2autochess-v2_1/config.json": {
+      "source_sha256": "4d16f6582c4ad124487ccbe9e6ca1f9cda9b49454f60bf17035370667cbf8b31",
+      "generated_sha256": "a5e3fc5767bb6dd7a2839d81257e7bcd73605850757d4d305023a93bc0685d9e",
+      "source_bytes": 52578,
+      "generated_bytes": 46070
+    },
+    "versions/act2autochess-v2_1/effects.json": {
+      "source_sha256": "79c9bc3bf2ff478ccb9000f6561b2e59ebe6df52894b3c9a92fd6a79d0ef4d98",
+      "generated_sha256": "29e4ca847c06e5d406dadba290194b3c0bc884224f85ed629f2d680fd8bb658d",
+      "source_bytes": 253018,
+      "generated_bytes": 253019
+    },
+    "versions/act2autochess-v2_1/enemies.json": {
+      "source_sha256": "69b4053444bbf5b753e1cf0de2ddab2d9df7a0415f6d12796576b3582933c256",
+      "generated_sha256": "6c51597cb8ea2b191b67b5beb5b35a7b18bea4b612c35ef61aeb93f8a394cf34",
+      "source_bytes": 407131,
+      "generated_bytes": 407132
+    },
+    "versions/act2autochess-v2_1/factions.json": {
+      "source_sha256": "d1bdf2a40ce5fa1e082551f12ce764a7ec3bfbef75c8a306e5b2b50fb34d797b",
+      "generated_sha256": "052715ae7f95347a3bba31e6eda83025936d99dde54b95ab2693dee4e281d75d",
+      "source_bytes": 23739,
+      "generated_bytes": 23740
+    },
+    "versions/act2autochess-v2_1/garrisons.json": {
+      "source_sha256": "41a583ac11e964450b51c20b9782659887c0a55cc56fcbb0cfad7750526afd46",
+      "generated_sha256": "a3e7cd39abb338b11f921c01c802c6a721c318303604844a11c710bee6617c6d",
+      "source_bytes": 135949,
+      "generated_bytes": 135950
+    },
+    "versions/act2autochess-v2_1/items.json": {
+      "source_sha256": "698cb91e13d2ebf3fa85cfcf508c39ce26426d704ac1648dceda2117e01fd36f",
+      "generated_sha256": "925ebd916fc173aabd1efa7565ee6f500617e40a225ba43f95fb7ba1fc23f30f",
+      "source_bytes": 174310,
+      "generated_bytes": 174311
+    },
+    "versions/act2autochess-v2_1/stages.json": {
+      "source_sha256": "40417d999aea98ec01cb2f4920255de12b76112a66692e7791924c5902da9796",
+      "generated_sha256": "297a8847f0953a28b6e03573a633ecdc9d40ae1e9b109f1f7eaf61ccf27def57",
+      "source_bytes": 265822,
+      "generated_bytes": 265823
+    },
+    "versions/act2autochess-v2_1/tokens.json": {
+      "source_sha256": "2ad126448d8777f4b5563bb62b7a9db64de42ec2f93f0ab1ccf4cc5dda51ba74",
+      "generated_sha256": "128326936beb706cdcb3d4bab3e393cda22add9149f964d8f06112eaa8bd3de9",
+      "source_bytes": 124772,
+      "generated_bytes": 123069
+    },
+    "versions/act2autochess-v2_1/waves.json": {
+      "source_sha256": "d929a47b4bec6cf8e90cade3b8dad7b7f7907cc6f6f738708ee9ca10b5d8d756",
+      "generated_sha256": "3fd82ca9fa1d01ddf8f48ad3d5254b27d2e164afbfce050c93a4174570beb36f",
+      "source_bytes": 133659,
+      "generated_bytes": 133660
+    },
     "waves.json": {
       "source_sha256": "80cb535958f22a1bf4ea71b26155c6f92ee1b49dd24b88acf4b2bcdf73d80e68",
       "generated_sha256": "35132a3d5905eb7b3dbf41bee1bc3cfb22b83e6314b14b21a9a4bc3a3789c925",
@@ -100,10 +370,10 @@
       "generated_bytes": 2494535
     },
     "public/i18n/en.json": {
-      "source_sha256": "4b928e113f4380c85d0ac0ac5e23ee06912ca45df360eca45e91efffed30a19a",
-      "generated_sha256": "4b928e113f4380c85d0ac0ac5e23ee06912ca45df360eca45e91efffed30a19a",
-      "source_bytes": 155287,
-      "generated_bytes": 155287
+      "source_sha256": "35a8c7b671b1f2c0c2a5ac0c45e7196d516780831f9fa93efed902157d36f7d2",
+      "generated_sha256": "35a8c7b671b1f2c0c2a5ac0c45e7196d516780831f9fa93efed902157d36f7d2",
+      "source_bytes": 173900,
+      "generated_bytes": 173900
     },
     "shared/i18nData.js": {
       "source_sha256": "9fc3611dff77ffb4d969699fd1bfc6c3e0de102d1f166c3502482ed4617b4430",

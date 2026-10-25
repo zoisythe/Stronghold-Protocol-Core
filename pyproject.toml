@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "stronghold-core"
-version = "0.3.1"
+version = "0.3.3"
 description = "Python interface to the headless Stronghold Node.js game core"
 requires-python = ">=3.11"
 license = "GPL-3.0-or-later"

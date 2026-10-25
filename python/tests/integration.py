@@ -104,6 +104,37 @@ def main():
         else:
             raise AssertionError("unexpected child exit was not reported")
     print("PASS multiplayer virtual deadline, observation boundary and process failure", flush=True)
+
+    # One module/data cache per session; historical ids may name different operators.
+    for version in ("act2autochess@V2_1", "act1autochess", "act1autochess@V1_1"):
+        historical_config = {"bot_rehearsal": 0}
+        with Env(version=version) as historical:
+            initial = historical.reset(7, historical_config)
+            assert initial["observation"]["version"] == version
+            before = historical.debug_state()
+            action = historical.teacher_action()
+            assert action in historical.legal_actions() and historical.debug_state() == before
+            advanced = take(historical, action)
+            assert historical.reset(7, historical_config) == initial
+            assert take(historical, action) == advanced
+            if version.startswith("act1autochess"):
+                timed = historical.reset(7, historical_config)
+                assert timed["observation"]["deadline_ms"] is not None
+                untimed = historical.reset(7, {**historical_config, "solo_unlimited": True})
+                assert untimed["observation"]["deadline_ms"] is None
+            try:
+                historical.reset(7, {**historical_config, "difficulty": "ABYSS"})
+            except CoreError:
+                pass
+            else:
+                raise AssertionError("historical version accepted an unavailable mode")
+        with BatchEnv(2, workers=2, version=version) as historical_batch:
+            assert historical_batch.reset([7, 7], historical_config) == [initial, initial]
+            assert historical_batch.teacher_action() == [action, action]
+            assert historical_batch.step([0, 0], [action, action]) == [advanced, advanced]
+    with Env() as default:
+        assert "version" not in default.reset(3, config)["observation"]
+    print("PASS three historical versions, timing, replay and single/batch isolation", flush=True)
     print(json.dumps({"integration_seconds": perf_counter() - start, "actions": steps, **timings}), flush=True)
 
 

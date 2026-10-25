@@ -20,7 +20,7 @@ def _config(config):
 
 
 class _Session:
-    def __init__(self, *, workers=1, node="node", root=None, timeout=120):
+    def __init__(self, *, workers=1, node="node", root=None, timeout=120, version="act2autochess"):
         if not isinstance(workers, int) or not 1 <= workers <= 64:
             raise ValueError("workers must be 1..64")
         if timeout <= 0:
@@ -41,7 +41,7 @@ class _Session:
         self._failure = None
         self.stderr = deque(maxlen=100)
         self.process = subprocess.Popen(
-            [node, str(bridge), "--workers", str(workers)], cwd=directory,
+            [node, str(bridge), "--workers", str(workers), "--version", version], cwd=directory,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             encoding="utf-8", errors="strict", text=True, bufsize=1,
             creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
@@ -133,8 +133,8 @@ class _Session:
 
 
 class Env:
-    def __init__(self, *, node="node", root=None, timeout=120):
-        self._session = _Session(node=node, root=root, timeout=timeout)
+    def __init__(self, *, node="node", root=None, timeout=120, version="act2autochess"):
+        self._session = _Session(node=node, root=root, timeout=timeout, version=version)
         try:
             self._env = self._session.request("create")
         except Exception:
@@ -173,11 +173,11 @@ class Env:
 
 
 class BatchEnv:
-    def __init__(self, count, *, workers=1, node="node", root=None, timeout=120):
+    def __init__(self, count, *, workers=1, node="node", root=None, timeout=120, version="act2autochess"):
         if not isinstance(count, int) or count < 1:
             raise ValueError("count must be positive")
         self.count = count
-        self._session = _Session(workers=workers, node=node, root=root, timeout=timeout)
+        self._session = _Session(workers=workers, node=node, root=root, timeout=timeout, version=version)
         try:
             self._envs = [self._session.request("create") for _ in range(count)]
         except Exception:

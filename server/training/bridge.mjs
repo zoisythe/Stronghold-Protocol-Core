@@ -1,13 +1,17 @@
 import { Worker } from 'node:worker_threads';
 import { createInterface } from 'node:readline';
+import { DEFAULT_VERSION, versionById } from '../../shared/versions.js';
 
 const index = process.argv.indexOf('--workers');
 const count = index < 0 ? 1 : Number(process.argv[index + 1]);
 if (!Number.isInteger(count) || count < 1 || count > 64) throw new TypeError('workers must be 1..64');
+const versionIndex = process.argv.indexOf('--version');
+const version = versionIndex < 0 ? DEFAULT_VERSION : process.argv[versionIndex + 1];
+if (!versionById(version)) throw new RangeError(`Unknown version: ${version}`);
 const routes = new Map(), pending = new Map();
 let nextEnv = 0, sequence = 0, stopping = false;
 const workers = Array.from({ length: count }, () => {
-  const worker = new Worker(new URL('./worker.mjs', import.meta.url), { stdout: true, stderr: true });
+  const worker = new Worker(new URL('./worker.mjs', import.meta.url), { stdout: true, stderr: true, workerData: { version } });
   worker.stdout.pipe(process.stderr); worker.stderr.pipe(process.stderr);
   worker.on('message', (message) => {
     const request = pending.get(message.id);

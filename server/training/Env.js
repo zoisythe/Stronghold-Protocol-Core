@@ -44,6 +44,7 @@ export class Env {
     if (!Number.isInteger(rehearsal) || rehearsal < 0 || rehearsal > 8) throw new TypeError('bot_rehearsal must be 0..8');
     const soloTimed = config.solo_timed === undefined ? false : config.solo_timed;
     if (typeof soloTimed !== 'boolean') throw new TypeError('solo_timed must be boolean');
+    if (config.solo_unlimited !== undefined && typeof config.solo_unlimited !== 'boolean') throw new TypeError('solo_unlimited must be boolean');
     if (config.teacher_incremental_shadow !== undefined && typeof config.teacher_incremental_shadow !== 'boolean') throw new TypeError('teacher_incremental_shadow must be boolean');
     if (config.teacher_plan_reuse !== undefined && typeof config.teacher_plan_reuse !== 'boolean') throw new TypeError('teacher_plan_reuse must be boolean');
     if (config.teacher_plan_reuse && mode !== 'solo') throw new TypeError('timed teacher plan reuse supports solo only');
@@ -61,7 +62,7 @@ export class Env {
     const seats = this.setups.map((setup, seat) => ({ seat, playerId: `p_${seat}`, name: `P${seat + 1}`, isBot: !this.controlled.has(seat), connected: true, ...setup }));
     const m = this.match = new Match({ mode, difficulty, seats, seed: this.seed, data: this.data,
       scheduler: this.scheduler, log: QUIET, botRehearsal: rehearsal, clientCombat: false,
-      stageId: config.stage_id, aiPicksLast: config.ai_picks_last === true });
+      stageId: config.stage_id, aiPicksLast: config.ai_picks_last === true, soloUnlimited: config.solo_unlimited === true });
     if (mode === 'solo' && soloTimed) {
       // Explicit training timing only: keep solo content and the original phase
       // transitions, but source preparation limits from the matching co-op mode.
@@ -169,6 +170,7 @@ export class Env {
       const privateState = ps.privateView();
       delete privateState.t;
       return copy({ phase: m.phase, round: m.round, last_round: m.gd.lastRound, mode_id: m.modeId,
+        ...(m.version ? { version: m.version } : {}),
         difficulty: m.difficulty, stage_id: m.stageId, factions: m.factions, disabled_bonds: [...m.disabledBonds, ...m.staticInactiveBonds],
         deadline_ms: m.deadline ? Math.max(0, m.deadline - this.scheduler.now()) : null,
         deploy_field: m.deployFieldOf(ps), deploy_tiles: Object.fromEntries(ps.deployMap()),

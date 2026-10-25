@@ -1,5 +1,15 @@
-import { parentPort } from 'node:worker_threads';
-import { Env } from './Env.js';
+import { parentPort, workerData } from 'node:worker_threads';
+import { getVersionData, setData } from '../data.js';
+import { DEFAULT_VERSION } from '../../shared/versions.js';
+import { rememberOfficialBounds } from '../../shared/content/officialBounds.js';
+
+// Version-specific module caches must be initialized before any gameplay import.
+if (workerData?.version && workerData.version !== DEFAULT_VERSION) {
+  const data = getVersionData(workerData.version);
+  setData(data);
+  rememberOfficialBounds(data);
+}
+const { Env } = await import('./Env.js');
 
 const environments = new Map();
 const allowed = new Set(['reset', 'observe', 'legal_actions', 'step', 'teacher_action', 'debug_state']);

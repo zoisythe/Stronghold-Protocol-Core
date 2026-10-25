@@ -102,6 +102,7 @@ export class MatchSettle {
   finish({ victory, hiddenCleared = false, reason = 'defeat' }) {
     if (this.ended || this.disposed) return;
     this.ended = true;
+    this.externalAI?.close();
     if (this.runner) { try { this.runner.stop(); } catch { /* ignore */ } this.runner = null; }
     this.cancel(this._phaseTimer);
     this.cancel(this._turnTimer);

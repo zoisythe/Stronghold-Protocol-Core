@@ -47,13 +47,22 @@ with BatchEnv(2, workers=2) as batch:
     states = batch.step([0, 0], advice)
 ```
 
-`Env(node="node", root=None, timeout=120)` finds the bundled wheel runtime or
+`Env(node="node", root=None, timeout=120, version="act2autochess")` finds the bundled wheel runtime or
 the editable checkout. `root` explicitly selects another checkout. Node.js must
 be installed separately. Config can be a dictionary or a UTF-8 JSON file path.
 `BatchEnv(count, workers=1, ...)` returns lists in environment order; `configs`
 may be one shared config or a list. Terminal environments are not automatically
 reset. A request timeout makes its entire session unavailable; construct a new
 session explicitly after diagnosing the failure.
+
+`Env` and `BatchEnv` accept a session-wide `version`: `act2autochess` (default,
+second period lower half), `act2autochess@V2_1` (second period upper half),
+`act1autochess` (first period lower half), or `act1autochess@V1_1` (first period
+upper half). For example, `with Env(version="act1autochess") as env:` selects
+first-period rules and data for every reset and teacher shadow in that session.
+Use another session to change versions. Historical versions reject `ABYSS`.
+Their observations/results carry `version`; default observations keep their
+existing shape. Historical texts are Chinese, as in the pinned release.
 
 ## Configuration defaults
 
@@ -67,6 +76,7 @@ session explicitly after diagnosing the failure.
 | `teacher_plan_reuse` | false; solo-only continuation of a teacher plan across timed actions within one prep phase, checking the next action through the real rule path; invalidated on phase/round changes |
 | `teacher_incremental_shadow` | false; true incrementally synchronizes an isolated teacher mirror and rolls planning back after each query |
 | `solo_timed` | false; true makes solo training use the same-difficulty multiplayer phase timers and round-by-round preparation limits |
+| `solo_unlimited` | false; true disables the original first-period solo phase timers; explicit `solo_timed` takes precedence |
 | `setup` / `setups` | shared baseline / per-seat baselines; absent entries use defaults |
 | `perturbation_probability` | 0; probability in [0,1] |
 | `strategy` | `{ "mode": "model" }`; mode `fixed/random/model`, optional `fixed` id, `bans` ids and `ban_count` 0–3 |
@@ -97,6 +107,10 @@ The option has no effect on cooperative matches. Advance this clock with
 accepted actions' positive `elapsed_ms`; queries and rejected actions still do
 not advance time. Record the reset option and every action duration for
 deterministic replay, including isolated teacher shadows.
+
+First-period solo uses the upstream historical timers by default (300 s
+preparation, 150 s choice phase). `solo_unlimited: true` opts out. This does not
+change the default second-period untimed solo behavior.
 
 Observers receive their own hand, funds, shop, choices and setup; teammates expose
 public boards, equipment, LP, level, strategy and public bond strips, never hand
